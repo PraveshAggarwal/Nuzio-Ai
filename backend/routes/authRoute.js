@@ -30,14 +30,11 @@ router.post("/signup", async (req, res) => {
     }
 
     const displayName = name?.trim() || cleanEmail.split("@")[0];
-    const userAvatar = picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(displayName)}`;
 
     const newUser = await User.create({
       name: displayName,
       email: cleanEmail,
       password: password, // Saved as-is in database
-      picture: userAvatar,
-      authProvider: "custom_google",
     });
 
     return res.status(201).json({
@@ -47,7 +44,6 @@ router.post("/signup", async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        picture: newUser.picture,
         createdAt: newUser.createdAt,
       },
     });
@@ -86,7 +82,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    if (user.password && user.password !== password) {
+    if (user.password !== password) {
       return res.status(401).json({
         success: false,
         message: "Invalid password. Please check your credentials.",
@@ -100,7 +96,6 @@ router.post("/login", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        picture: user.picture,
         createdAt: user.createdAt,
       },
     });
