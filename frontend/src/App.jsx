@@ -11,7 +11,7 @@ import './App.css'
 function MainContent() {
   const { isAuthenticated } = useAuth()
   const { hasSelectedLanguage } = useLanguage()
-  const { hasCompletedNiches } = useNiches()
+  const { hasCompletedNiches, confirmNiches, resetNichesOnboarding } = useNiches()
 
   // 1. If not authenticated:
   if (!isAuthenticated) {
@@ -24,11 +24,11 @@ function MainContent() {
   // 2. If authenticated:
   // After login and signup -> show Niches selection screen first
   if (!hasCompletedNiches) {
-    return <NichesScreen />
+    return <NichesScreen onContinue={confirmNiches} onSkip={confirmNiches} />
   }
 
   // 3. Once niches are selected -> show Live Audio News Feed
-  return <FeedScreen />
+  return <FeedScreen onEditNiches={resetNichesOnboarding} />
 }
 
 function App() {

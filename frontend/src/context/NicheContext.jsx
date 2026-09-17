@@ -51,6 +51,11 @@ export function NicheProvider({ children }) {
     localStorage.setItem('nuzio_selected_niches', JSON.stringify(selectedNiches));
   };
 
+  const startNichesOnboarding = () => {
+    setHasCompletedNiches(false);
+    localStorage.setItem('nuzio_niches_completed', 'false');
+  };
+
   const resetNichesOnboarding = () => {
     setHasCompletedNiches(false);
     localStorage.setItem('nuzio_niches_completed', 'false');
@@ -62,6 +67,7 @@ export function NicheProvider({ children }) {
         selectedNiches,
         toggleNiche,
         confirmNiches,
+        startNichesOnboarding,
         hasCompletedNiches,
         resetNichesOnboarding,
         availableNiches: AVAILABLE_NICHES,

@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || 'Signup failed');
       }
 
+      localStorage.removeItem('nuzio_niches_completed');
       setUser(data.user);
       return data;
     } catch (err) {
@@ -69,6 +70,7 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || 'Login failed');
       }
 
+      localStorage.removeItem('nuzio_niches_completed');
       setUser(data.user);
       return data;
     } catch (err) {
@@ -83,6 +85,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('nuzio_user');
+    localStorage.removeItem('nuzio_niches_completed');
   };
 
   return (
