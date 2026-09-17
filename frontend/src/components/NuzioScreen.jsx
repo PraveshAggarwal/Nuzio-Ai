@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNiches } from '../context/NicheContext';
+import IosStatusBar from './IosStatusBar';
 import { 
   Sparkles, Loader2, AlertCircle, Eye, EyeOff, Lock, Mail, 
   User, CheckCircle2, ArrowRight, X, ShieldCheck, ChevronLeft
@@ -9,6 +11,7 @@ import {
 export default function NuzioScreen({ onBackToLanguage }) {
   const { signupWithEmailAndPassword, loginWithEmailAndPassword, loading } = useAuth();
   const { language, selectLanguage, resetLanguageSelection, t } = useLanguage();
+  const { resetNichesOnboarding } = useNiches();
   
   // UI States
   const [clicked, setClicked] = useState(false);
@@ -25,59 +28,6 @@ export default function NuzioScreen({ onBackToLanguage }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Live status bar
-  const [currentTime, setCurrentTime] = useState(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`;
-  });
-  const [batteryLevel, setBatteryLevel] = useState(90);
-  const [isCharging, setIsCharging] = useState(false);
-
-  useEffect(() => {
-    const updateSystemTime = () => {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      setCurrentTime(`${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`);
-    };
-
-    updateSystemTime();
-    const timer = setInterval(updateSystemTime, 1000);
-
-    let batteryInstance = null;
-    let onLevelChange = null;
-    let onChargingChange = null;
-
-    if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
-      navigator.getBattery().then((battery) => {
-        batteryInstance = battery;
-        const updateBatteryInfo = () => {
-          setBatteryLevel(Math.round(battery.level * 100));
-          setIsCharging(battery.charging);
-        };
-
-        updateBatteryInfo();
-        onLevelChange = updateBatteryInfo;
-        onChargingChange = updateBatteryInfo;
-
-        battery.addEventListener('levelchange', onLevelChange);
-        battery.addEventListener('chargingchange', onChargingChange);
-      }).catch((err) => {
-        console.log('Battery API not available:', err);
-      });
-    }
-
-    return () => {
-      clearInterval(timer);
-      if (batteryInstance) {
-        if (onLevelChange) batteryInstance.removeEventListener('levelchange', onLevelChange);
-        if (onChargingChange) batteryInstance.removeEventListener('chargingchange', onChargingChange);
-      }
-    };
-  }, []);
 
   const handleGoogleButtonClick = () => {
     setClicked(true);
@@ -115,12 +65,14 @@ export default function NuzioScreen({ onBackToLanguage }) {
           email: email.trim().toLowerCase(),
           password: password,
         });
+        resetNichesOnboarding();
         setSuccessMessage(language === 'hi' ? 'खाता सफलतापूर्वक डेटाबेस में सहेजा गया!' : 'Account created and saved in database!');
       } else {
         await loginWithEmailAndPassword({
           email: email.trim().toLowerCase(),
           password: password,
         });
+        resetNichesOnboarding();
         setSuccessMessage(language === 'hi' ? 'सफलतापूर्वक लॉग इन किया गया!' : 'Logged in successfully!');
       }
     } catch (err) {
@@ -154,33 +106,8 @@ export default function NuzioScreen({ onBackToLanguage }) {
 
         {/* ================= HEADER / STATUS BAR ================= */}
         <div className="w-full relative z-10 flex flex-col">
-          {/* iOS Status Bar */}
-          <div className="flex items-center justify-between text-white/90 text-[14px] font-semibold tracking-tight px-1 pt-0.5">
-            <span className="font-medium tracking-normal text-[14px]">{currentTime}</span>
- 
-
-            {/* Status Icons */}
-            <div className="flex items-center space-x-2 text-white/90">
-              <svg className="w-4 h-3.5 fill-current" viewBox="0 0 17 12">
-                <rect x="0.5" y="8" width="2.5" height="4" rx="0.6" />
-                <rect x="4.5" y="5.5" width="2.5" height="6.5" rx="0.6" />
-                <rect x="8.5" y="3" width="2.5" height="9" rx="0.6" />
-                <rect x="12.5" y="0.5" width="2.5" height="11.5" rx="0.6" />
-              </svg>
-              <svg className="w-4 h-3.5 fill-current" viewBox="0 0 16 12">
-                <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.2-3a5.9 5.9 0 018.4 0 .9.9 0 101.27-1.28 7.7 7.7 0 00-10.94 0 .9.9 0 001.27 1.28zm-3.2-3.1a10.4 10.4 0 0114.8 0 .9.9 0 101.27-1.28 12.2 12.2 0 00-17.34 0 .9.9 0 001.27 1.28z" />
-              </svg>
-              <div className="w-[22px] h-[11.5px] rounded-[3.5px] border border-white/70 p-[1.5px] flex items-center relative">
-                <div 
-                  className={`h-full rounded-[1.5px] transition-all duration-300 ${
-                    isCharging ? 'bg-[#22c55e]' : batteryLevel <= 20 ? 'bg-[#ef4444]' : 'bg-white'
-                  }`}
-                  style={{ width: `${Math.max(8, Math.min(100, batteryLevel))}%` }}
-                />
-                <div className="absolute -right-[3.5px] top-[2.5px] w-[2px] h-[4.5px] bg-white/70 rounded-r-[1px]" />
-              </div>
-            </div>
-          </div>
+          {/* iOS Status Bar with Dynamic Wi-Fi / Tower Network Switching */}
+          <IosStatusBar showIsland={true} />
 
           {/* Quick Back to Language Button */}
           <div className="flex items-center justify-between mt-3 px-1">

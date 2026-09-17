@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
+    niches: {
+      type: [String],
+      default: ["ai-tech", "indian-business", "startups"],
+    },
+    language: {
+      type: String,
+      default: "en",
+    },
   },
   {
     timestamps: true,

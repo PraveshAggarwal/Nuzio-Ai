@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+  <defs>
+    <linearGradient id="logo-purple-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id="logo-cyan-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Audio Waveform Bars Icon -->
+  <g transform="translate(10, 10)">
+    <rect x="0" y="16" width="3.5" height="12" rx="1.75" fill="url(#logo-purple-grad)" />
+    <rect x="7" y="9" width="3.5" height="26" rx="1.75" fill="url(#logo-purple-grad)" />
+    <rect x="14" y="3" width="4" height="38" rx="2" fill="url(#logo-cyan-grad)" />
+    <rect x="22" y="11" width="3.5" height="22" rx="1.75" fill="url(#logo-purple-grad)" />
+    <rect x="29" y="17" width="3.5" height="10" rx="1.75" fill="url(#logo-purple-grad)" />
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="56" y="38" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="28" fill="#ffffff" letter-spacing="-0.5">Nuzio</text>
+  <text x="136" y="38" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="28" fill="#8b5cf6" letter-spacing="-0.5">AI</text>
+  <path d="M178 18L179.2 21.8L183 23L179.2 24.2L178 28L176.8 24.2L173 23L176.8 21.8L178 18Z" fill="#c084fc" opacity="0.9" />
+</svg>

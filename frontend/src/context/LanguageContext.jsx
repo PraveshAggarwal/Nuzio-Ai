@@ -38,7 +38,7 @@ export const TRANSLATIONS = {
     fullNameLabel: 'Full Name',
     emailLabel: 'Google / Work Email',
     passwordLabel: 'Password',
-    createBtn: 'Create Account & Save to DB',
+    createBtn: 'Create Account',
     signInBtn: 'Sign In',
     dbSecurityNote: 'Encrypted & persisted to MongoDB database',
 

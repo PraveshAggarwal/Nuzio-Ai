@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const NicheContext = createContext(null);
 
@@ -18,6 +19,8 @@ export const AVAILABLE_NICHES = [
 ];
 
 export function NicheProvider({ children }) {
+  const { user, updateUserPreferences } = useAuth();
+
   const [selectedNiches, setSelectedNiches] = useState(() => {
     try {
       const saved = localStorage.getItem('nuzio_selected_niches');
@@ -26,6 +29,14 @@ export function NicheProvider({ children }) {
       return ['ai-tech', 'indian-business', 'startups'];
     }
   });
+
+  // Sync user's saved niches from MongoDB on login / auth change
+  useEffect(() => {
+    if (user?.niches && Array.isArray(user.niches) && user.niches.length > 0) {
+      setSelectedNiches(user.niches);
+      localStorage.setItem('nuzio_selected_niches', JSON.stringify(user.niches));
+    }
+  }, [user?.niches]);
 
   const [hasCompletedNiches, setHasCompletedNiches] = useState(() => {
     return localStorage.getItem('nuzio_niches_completed') === 'true';
@@ -45,10 +56,16 @@ export function NicheProvider({ children }) {
     });
   };
 
-  const confirmNiches = () => {
+  const confirmNiches = async (customNiches) => {
+    const nichesToSave = customNiches && Array.isArray(customNiches) ? customNiches : selectedNiches;
     setHasCompletedNiches(true);
     localStorage.setItem('nuzio_niches_completed', 'true');
-    localStorage.setItem('nuzio_selected_niches', JSON.stringify(selectedNiches));
+    localStorage.setItem('nuzio_selected_niches', JSON.stringify(nichesToSave));
+
+    // Persist in MongoDB database for this user
+    if (updateUserPreferences) {
+      await updateUserPreferences({ niches: nichesToSave });
+    }
   };
 
   const startNichesOnboarding = () => {
@@ -65,6 +82,7 @@ export function NicheProvider({ children }) {
     <NicheContext.Provider
       value={{
         selectedNiches,
+        setSelectedNiches,
         toggleNiche,
         confirmNiches,
         startNichesOnboarding,

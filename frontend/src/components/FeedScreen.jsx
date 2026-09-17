@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNiches } from '../context/NicheContext';
+import IosStatusBar from './IosStatusBar';
 import { 
   Play, Pause, SkipBack, SkipForward, Search, Bell, 
   ExternalLink, Bookmark, Compass, Settings, Sparkles,
@@ -83,15 +84,15 @@ const LIVE_NEWS_DATABASE = {
       timeAgo: '1h ago',
     },
     {
-      id: 'climate-energy-1',
-      nicheId: 'climate-energy',
-      category: 'CLIMATE & ENERGY',
-      title: 'India achieves 200GW renewable milestone ahead of scheduled timeline.',
-      snippet: 'Solar park expansion in Rajasthan and offshore wind projects in Tamil Nadu lead dramatic clean power transition.',
-      source: 'THE HINDU',
-      sourceUrl: 'https://thehindu.com',
+      id: 'geopolitics-1',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      title: 'India-Middle East-Europe Economic Corridor accelerates green maritime routes.',
+      snippet: 'Trilateral shipping ports complete standardized digital customs integration, reducing transit times between Mumbai and European hubs by 40%.',
+      source: 'FINANCIAL TIMES',
+      sourceUrl: 'https://ft.com',
       duration: '3 MIN',
-      audioTime: '02:55',
+      audioTime: '03:05',
       timeAgo: '1h ago',
     },
     {
@@ -105,7 +106,55 @@ const LIVE_NEWS_DATABASE = {
       duration: '3 MIN',
       audioTime: '03:20',
       timeAgo: '2h ago',
-    }
+    },
+    {
+      id: 'climate-energy-1',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      title: 'India achieves 200GW renewable milestone ahead of scheduled timeline.',
+      snippet: 'Solar park expansion in Rajasthan and offshore wind projects in Tamil Nadu lead dramatic clean power transition.',
+      source: 'THE HINDU',
+      sourceUrl: 'https://thehindu.com',
+      duration: '3 MIN',
+      audioTime: '02:55',
+      timeAgo: '2h ago',
+    },
+    {
+      id: 'sports-1',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      title: 'Indian Cricket Board announces next-gen high-performance analytics center in Bengaluru.',
+      snippet: 'AI motion capture and biometric strain tracking integrated into national squad conditioning ahead of upcoming world championship.',
+      source: 'ESPN CRICINFO',
+      sourceUrl: 'https://espncricinfo.com',
+      duration: '2 MIN',
+      audioTime: '02:20',
+      timeAgo: '3h ago',
+    },
+    {
+      id: 'culture-arts-1',
+      nicheId: 'culture-arts',
+      category: 'CULTURE & ARTS',
+      title: 'National Museum launches 4K digital preservation archive for ancient Indian manuscripts.',
+      snippet: 'Over 100,000 rare Sanskrit and Prakrit manuscripts digitized and opened for global AI translation and research initiatives.',
+      source: 'BBC CULTURE',
+      sourceUrl: 'https://bbc.com',
+      duration: '3 MIN',
+      audioTime: '03:00',
+      timeAgo: '3h ago',
+    },
+    {
+      id: 'legal-policy-1',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      title: 'Supreme Court establishes nationwide digital evidence authentication standards.',
+      snippet: 'Cryptographic timestamping mandated for electronic judicial records to speed up commercial dispute resolutions across high courts.',
+      source: 'LIVE LAW',
+      sourceUrl: 'https://livelaw.in',
+      duration: '3 MIN',
+      audioTime: '03:10',
+      timeAgo: '4h ago',
+    },
   ],
   hi: [
     {
@@ -157,6 +206,18 @@ const LIVE_NEWS_DATABASE = {
       timeAgo: '42 मिनट पहले',
     },
     {
+      id: 'global-politics-1',
+      nicheId: 'global-politics',
+      category: 'राजनीति',
+      title: 'जिनेवा में वैश्विक व्यापार मंत्रियों की बैठक; डिजिटल कॉमर्स मानकों पर सहमति।',
+      snippet: 'एआई संप्रभुता और सुरक्षित क्रॉस-बॉर्डर डिजिटल लेनदेन के लिए नए अंतरराष्ट्रीय नियम तैयार किए जा रहे हैं।',
+      source: 'रॉयटर्स',
+      sourceUrl: 'https://reuters.com',
+      duration: '4 मिनट',
+      audioTime: '03:50',
+      timeAgo: '50 मिनट पहले',
+    },
+    {
       id: 'science-1',
       nicheId: 'science',
       category: 'विज्ञान',
@@ -167,7 +228,79 @@ const LIVE_NEWS_DATABASE = {
       duration: '2 मिनट',
       audioTime: '02:45',
       timeAgo: '1 घंटा पहले',
-    }
+    },
+    {
+      id: 'geopolitics-1',
+      nicheId: 'geopolitics',
+      category: 'भू-राजनीति',
+      title: 'भारत-मध्य पूर्व-यूरोप आर्थिक गलियारे में हरित समुद्री मार्गों का विस्तार।',
+      snippet: 'मुंबई और यूरोपीय बंदरगाहों के बीच माल ढुलाई समय में 40% की कमी लाने के लिए डिजिटल कस्टम्स शुरू।',
+      source: 'फाइनेंशियल टाइम्स',
+      sourceUrl: 'https://ft.com',
+      duration: '3 मिनट',
+      audioTime: '03:05',
+      timeAgo: '1 घंटा पहले',
+    },
+    {
+      id: 'health-medicine-1',
+      nicheId: 'health-medicine',
+      category: 'स्वास्थ्य',
+      title: 'एमआरएनए थेरेपी के क्लिनिकल ट्रायल में ऑटोइम्यून बीमारियों के उपचार में बड़ी सफलता।',
+      snippet: 'नई बायो-टारगेटेड तकनीक ने सामान्य प्रतिरक्षा तंत्र को सुरक्षित रखते हुए असाध्य लक्षणों को समाप्त किया।',
+      source: 'नेचर',
+      sourceUrl: 'https://nature.com',
+      duration: '3 मिनट',
+      audioTime: '03:20',
+      timeAgo: '2 घंटे पहले',
+    },
+    {
+      id: 'climate-energy-1',
+      nicheId: 'climate-energy',
+      category: 'पर्यावरण & ऊर्जा',
+      title: 'भारत ने तय समय से पहले 200 गीगावाट स्वच्छ नवीकरणीय ऊर्जा का लक्ष्य हासिल किया।',
+      snippet: 'राजस्थान के सोलर पार्क्स और तमिलनाडु के पवन ऊर्जा प्रोजेक्ट्स के दम पर ऐतिहासिक उपलब्धि।',
+      source: 'द हिंदू',
+      sourceUrl: 'https://thehindu.com',
+      duration: '3 मिनट',
+      audioTime: '02:55',
+      timeAgo: '2 घंटे पहले',
+    },
+    {
+      id: 'sports-1',
+      nicheId: 'sports',
+      category: 'खेल',
+      title: 'बेंगलुरु में भारतीय क्रिकेट टीम के लिए अत्याधुनिक एआई एनालिटिक्स सेंटर शुरू।',
+      snippet: 'खिलाड़ियों की फिटनेस और चोटों से बचाव के लिए मोशन-कैप्चर और बायोमेट्रिक तकनीक का उपयोग।',
+      source: 'क्रिकइन्फो',
+      sourceUrl: 'https://espncricinfo.com',
+      duration: '2 मिनट',
+      audioTime: '02:20',
+      timeAgo: '3 घंटे पहले',
+    },
+    {
+      id: 'culture-arts-1',
+      nicheId: 'culture-arts',
+      category: 'कला & संस्कृति',
+      title: 'प्राचीन भारतीय पांडुलिपियों के डिजिटलाइजेशन के लिए 4K डिजिटल आर्काइव का लोकार्पण।',
+      snippet: '1 लाख से अधिक दुर्लभ पांडुलिपियों का एआई अनुवाद और वैश्विक शोध के लिए ऑनलाइन संग्रह तैयार।',
+      source: 'बीबीसी',
+      sourceUrl: 'https://bbc.com',
+      duration: '3 मिनट',
+      audioTime: '03:00',
+      timeAgo: '3 घंटे पहले',
+    },
+    {
+      id: 'legal-policy-1',
+      nicheId: 'legal-policy',
+      category: 'कानून & नीति',
+      title: 'सुप्रीम कोर्ट ने अदालतों में डिजिटल साक्ष्यों के प्रमाणीकरण के नए मानक तय किए।',
+      snippet: 'क्रिप्टोग्राफिक टाइमस्टैम्पिंग से वाणिज्यिक मुकदमों के शीघ्र निपटारे का रास्ता साफ हुआ।',
+      source: 'लाइव लॉ',
+      sourceUrl: 'https://livelaw.in',
+      duration: '3 मिनट',
+      audioTime: '03:10',
+      timeAgo: '4 घंटे पहले',
+    },
   ]
 };
 
@@ -205,59 +338,6 @@ export default function FeedScreen({ onEditNiches }) {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [progressPercent, setProgressPercent] = useState(38);
-
-  // Real-time live clock
-  const [currentTime, setCurrentTime] = useState(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`;
-  });
-
-  // Real-time Battery API
-  const [batteryLevel, setBatteryLevel] = useState(90);
-  const [isCharging, setIsCharging] = useState(false);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      setCurrentTime(`${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`);
-    };
-    const timer = setInterval(updateTime, 1000);
-
-    let batteryInstance = null;
-    let onLevelChange = null;
-    let onChargingChange = null;
-
-    if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
-      navigator.getBattery().then((battery) => {
-        batteryInstance = battery;
-        const updateBatteryInfo = () => {
-          setBatteryLevel(Math.round(battery.level * 100));
-          setIsCharging(battery.charging);
-        };
-
-        updateBatteryInfo();
-        onLevelChange = updateBatteryInfo;
-        onChargingChange = updateBatteryInfo;
-
-        battery.addEventListener('levelchange', onLevelChange);
-        battery.addEventListener('chargingchange', onChargingChange);
-      }).catch((err) => {
-        console.log('Battery API not available:', err);
-      });
-    }
-
-    return () => {
-      clearInterval(timer);
-      if (batteryInstance) {
-        if (onLevelChange) batteryInstance.removeEventListener('levelchange', onLevelChange);
-        if (onChargingChange) batteryInstance.removeEventListener('chargingchange', onChargingChange);
-      }
-    };
-  }, []);
 
   // Filtered by selected tab
   const filteredStories = displayStories.filter((story) => {
@@ -379,46 +459,8 @@ export default function FeedScreen({ onEditNiches }) {
         {/* ================= 1. HEADER & STATUS BAR (REAL TIME) ================= */}
         <div className="w-full relative z-20 px-6 pt-5 sm:px-7 sm:pt-6">
           
-          {/* iOS Status Bar with Real Time & Real Battery API */}
-          <div className="flex items-center justify-between text-white/90 text-[14px] font-semibold tracking-tight px-1">
-            <span className="font-medium tracking-normal text-[14px]">{currentTime}</span>
-            
-      
-
-            {/* Status Icons */}
-            <div className="flex items-center space-x-2 text-white/90">
-              <svg className="w-4 h-3.5 fill-current" viewBox="0 0 17 12">
-                <rect x="0.5" y="8" width="2.5" height="4" rx="0.6" />
-                <rect x="4.5" y="5.5" width="2.5" height="6.5" rx="0.6" />
-                <rect x="8.5" y="3" width="2.5" height="9" rx="0.6" />
-                <rect x="12.5" y="0.5" width="2.5" height="11.5" rx="0.6" />
-              </svg>
-              <svg className="w-4 h-3.5 fill-current" viewBox="0 0 16 12">
-                <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.2-3a5.9 5.9 0 018.4 0 .9.9 0 101.27-1.28 7.7 7.7 0 00-10.94 0 .9.9 0 001.27 1.28zm-3.2-3.1a10.4 10.4 0 0114.8 0 .9.9 0 101.27-1.28 12.2 12.2 0 00-17.34 0 .9.9 0 001.27 1.28z" />
-              </svg>
-
-              {/* Real-time Battery Indicator */}
-              <div className="flex items-center space-x-1">
-                {isCharging && (
-                  <svg className="w-3 h-3 text-[#22c55e] fill-current animate-pulse" viewBox="0 0 24 24">
-                    <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.08-.13L13 3h1l-1 7h3.5c.49 0 .56.33.37.68l-.06.1-5.81 10.22z" />
-                  </svg>
-                )}
-                <div 
-                  className="w-[22px] h-[11.5px] rounded-[3.5px] border border-white/70 p-[1.5px] flex items-center relative"
-                  title={`Battery: ${batteryLevel}% ${isCharging ? '(Charging)' : ''}`}
-                >
-                  <div 
-                    className={`h-full rounded-[1.5px] transition-all duration-300 ${
-                      isCharging ? 'bg-[#22c55e]' : batteryLevel <= 20 ? 'bg-[#ef4444]' : 'bg-white'
-                    }`}
-                    style={{ width: `${Math.max(8, Math.min(100, batteryLevel))}%` }}
-                  />
-                  <div className="absolute -right-[3.5px] top-[2.5px] w-[2px] h-[4.5px] bg-white/70 rounded-r-[1px]" />
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* iOS Status Bar with Dynamic Wi-Fi / Tower Network Switching */}
+          <IosStatusBar showIsland={true} />
 
           {/* Nuzio Brand Header Row + Search & Bell Icons */}
           <div className="flex items-center justify-between mt-3.5 px-0.5">

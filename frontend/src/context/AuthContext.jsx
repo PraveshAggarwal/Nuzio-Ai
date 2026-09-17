@@ -82,6 +82,31 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Save preferences (niches, language) in database
+  const updateUserPreferences = async ({ niches, language }) => {
+    if (!user) return;
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/auth/preferences`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id || user._id,
+          email: user.email,
+          niches: niches || user.niches,
+          language: language || user.language,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success && data.user) {
+        setUser((prev) => ({ ...prev, ...data.user }));
+        return data.user;
+      }
+    } catch (err) {
+      console.error('Failed to sync user preferences to DB:', err);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('nuzio_user');
@@ -97,6 +122,7 @@ export function AuthProvider({ children }) {
         setAuthError,
         signupWithEmailAndPassword,
         loginWithEmailAndPassword,
+        updateUserPreferences,
         logout,
         isAuthenticated: !!user,
       }}

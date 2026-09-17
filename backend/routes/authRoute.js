@@ -9,7 +9,7 @@ const router = express.Router();
  */
 router.post("/signup", async (req, res) => {
   try {
-    const { name, email, password, picture } = req.body;
+    const { name, email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -44,6 +44,8 @@ router.post("/signup", async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
+        niches: newUser.niches || [],
+        language: newUser.language || 'en',
         createdAt: newUser.createdAt,
       },
     });
@@ -96,6 +98,8 @@ router.post("/login", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        niches: user.niches || [],
+        language: user.language || 'en',
         createdAt: user.createdAt,
       },
     });
@@ -104,6 +108,67 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Login failed",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @route   PUT /api/auth/preferences
+ * @desc    Save user preferences (selected niches & language) in MongoDB User document
+ */
+router.put("/preferences", async (req, res) => {
+  try {
+    const { userId, email, niches, language } = req.body;
+
+    if (!userId && !email) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID or email is required to update preferences",
+      });
+    }
+
+    let user;
+    if (userId) {
+      user = await User.findById(userId);
+    }
+    if (!user && email) {
+      user = await User.findOne({ email: email.trim().toLowerCase() });
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found in database",
+      });
+    }
+
+    if (Array.isArray(niches)) {
+      user.niches = niches;
+    }
+    if (language) {
+      user.language = language;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Preferences updated and saved in database!",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        niches: user.niches,
+        language: user.language,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Update Preferences Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update preferences",
       error: error.message,
     });
   }
