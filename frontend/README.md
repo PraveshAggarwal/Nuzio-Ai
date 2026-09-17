@@ -1,16 +1,24 @@
-# React + Vite
+# 🎙️ Nuzio AI — Frontend Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Modern, audio-first news feed application built with **React 19**, **Vite**, **Tailwind CSS**, and **Web Speech API**.
 
-Currently, two official plugins are available:
+## 🚀 Quick Start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+# 1. Install dependencies
+npm install
 
-## React Compiler
+# 2. Run the development server
+npm run dev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# 3. Build for production
+npm run build
+```
 
-## Expanding the Oxlint configuration
+## 📱 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- **4-Step Onboarding Flow**: Language Selection &rarr; Login / Sign Up &rarr; Niches Selection &rarr; Discover Stream.
+- **Pure Audio & Listen-Only**: High-clarity AI male narrator voice with speed cycling (`1x`, `1.25x`, `1.5x`, `2x`), scrubber seeking, and dynamic time synchronization.
+- **Dynamic iOS Status Bar**: Real-time battery indicator, dynamic Wi-Fi/Cellular network detector, and live clock.
+- **12 Curated Domains**: Bilingual coverage (English & Hindi) across 48+ comprehensive news stories.
+- **Voice Customization**: Dynamic voice selector in Settings with preview for system-installed neural voices.

@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     niches: {
       type: [String],
-      default: ["ai-tech", "indian-business", "startups"],
+      default: [],
     },
     language: {
       type: String,

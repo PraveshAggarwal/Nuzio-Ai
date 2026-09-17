@@ -5,301 +5,1307 @@ import { useNiches } from '../context/NicheContext';
 import IosStatusBar from './IosStatusBar';
 import { 
   Play, Pause, SkipBack, SkipForward, Search, Bell, 
-  ExternalLink, Bookmark, Compass, Settings, Sparkles,
-  Volume2, VolumeX, Radio, Check, X, RefreshCw, LogOut, Globe, Sliders
+  ExternalLink, Star, Compass, Settings, X, Sliders, 
+  Globe, LogOut, ChevronLeft
 } from 'lucide-react';
 
-const LIVE_NEWS_DATABASE = {
+export const LIVE_NEWS_DATABASE = {
   en: [
+    // ================= 1. AI & TECH (4+ stories) =================
     {
       id: 'ai-tech-1',
       nicheId: 'ai-tech',
       category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
       title: 'Anthropic ships Claude 4.5 with 2M-token memory and native tools.',
-      snippet: 'Anthropic announces Claude 4.5 featuring unprecedented context retrieval, real-time computer use agents, and deep enterprise workflow automation.',
+      snippet: "Anthropic's new memory layer lets Claude hold entire codebases in mind while it works.",
       source: 'THE VERGE',
       sourceUrl: 'https://theverge.com',
-      duration: '3 MIN',
-      audioTime: '03:15',
-      timeAgo: '10m ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'ai-tech-2',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'OpenAI unveils lightweight on-device neural model for edge computing.',
+      snippet: 'New architecture enables sub-100ms reasoning on consumer hardware without sending private data to cloud servers.',
+      source: 'TECHCRUNCH',
+      sourceUrl: 'https://techcrunch.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+    {
+      id: 'ai-tech-3',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'Google DeepMind demonstrates real-time robotic surgery navigation.',
+      snippet: 'Neural spatial tracking achieves sub-millimeter precision in complex minimally invasive laparoscopic procedures.',
+      source: 'WIRED',
+      sourceUrl: 'https://wired.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'ai-tech-4',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'NVIDIA accelerates Blackwell Ultra GPUs with liquid cooling architecture.',
+      snippet: 'Data centers report 4x training efficiency and 40% reduction in power consumption for trillion-parameter LLMs.',
+      source: 'REUTERS',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '4 MIN LISTEN',
+      durationMinutes: '4 MIN',
+    },
+
+    // ================= 2. FINANCIAL MARKETS (4+ stories) =================
+    {
+      id: 'markets-1',
+      nicheId: 'financial-markets',
+      category: 'GLOBAL',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'Fed minutes hint at a September policy shift.',
+      snippet: 'Officials flagged growing confidence that inflation is cooling toward target.',
+      source: 'BLOOMBERG',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+    {
+      id: 'markets-2',
+      nicheId: 'financial-markets',
+      category: 'MARKETS',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'Sensex rallies past landmark milestone on $1.8B foreign portfolio inflow.',
+      snippet: 'Heavy institutional buying in banking, IT, and green energy equities pushes domestic indices to fresh lifetime highs.',
+      source: 'ECONOMIC TIMES',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'markets-3',
+      nicheId: 'financial-markets',
+      category: 'MARKETS',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'RBI holds benchmark repo rates steady while boosting liquidity buffers.',
+      snippet: 'Monetary policy committee maintains calibrated withdrawal stance as economic growth forecasts revised upward to 7.2%.',
+      source: 'MINT',
+      sourceUrl: 'https://livemint.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'markets-4',
+      nicheId: 'financial-markets',
+      category: 'GLOBAL',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'European bond yields decline as inflation drops below 2% threshold.',
+      snippet: 'ECB policymakers signal potential consecutive rate cuts to stimulate Eurozone industrial manufacturing.',
+      source: 'FINANCIAL TIMES',
+      sourceUrl: 'https://ft.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+
+    // ================= 3. INDIAN BUSINESS (4+ stories) =================
     {
       id: 'indian-business-1',
       nicheId: 'indian-business',
       category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
       title: 'Tata Electronics expands $14B semiconductor fab in Dholera, Gujarat.',
-      snippet: 'Production timeline moved up as domestic component ecosystem secures long-term international supply contracts with tier-1 automakers.',
+      snippet: 'Production timeline moved up as domestic component ecosystem secures long-term international supply contracts.',
       source: 'ECONOMIC TIMES',
       sourceUrl: 'https://economictimes.indiatimes.com',
-      duration: '3 MIN',
-      audioTime: '03:10',
-      timeAgo: '18m ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'indian-business-2',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'Reliance Retail launches automated multi-tier supply chain hubs in 50 cities.',
+      snippet: 'Autonomous sorting robotics and predictive cold storage reduce delivery bottlenecks for consumer goods across tier-2 belts.',
+      source: 'BUSINESS STANDARD',
+      sourceUrl: 'https://business-standard.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'indian-business-3',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'Adani Green secures $750M syndicated loan for Khavda hybrid park.',
+      snippet: 'Consortium of global institutional banks finances 30GW clean energy development in world’s largest single-location renewable facility.',
+      source: 'REUTERS',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+    {
+      id: 'indian-business-4',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'L&T wins mega infrastructure contract for western dedicated freight corridor.',
+      snippet: 'High-speed electrified freight tracks expected to double container transit speeds between ports and hinterland logistics parks.',
+      source: 'MINT',
+      sourceUrl: 'https://livemint.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+
+    // ================= 4. STARTUPS (4+ stories) =================
     {
       id: 'startups-1',
       nicheId: 'startups',
       category: 'STARTUPS',
-      title: 'Indian quick-commerce giant expands 10-minute delivery to 40 new cities.',
-      snippet: 'Blinkit and Zepto ramp up micro-warehouses and autonomous inventory prediction as Tier-2 retail demand jumps 140% year-on-year.',
-      source: 'TECHCRUNCH',
-      sourceUrl: 'https://techcrunch.com',
-      duration: '2 MIN',
-      audioTime: '02:30',
-      timeAgo: '24m ago',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'Adani Energy raises $1.2B in follow-on offering.',
+      snippet: 'The green energy arm priced its share sale at a modest discount.',
+      source: 'ECONOMIC TIMES',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
     {
-      id: 'financial-markets-1',
-      nicheId: 'financial-markets',
-      category: 'MARKETS',
-      title: 'Sensex rallies past milestone on tech surge and $1.8B foreign capital inflow.',
-      snippet: 'Indian benchmark indices hit fresh record highs driven by heavy buying in IT, semiconductor suppliers, and private banking equities.',
-      source: 'BLOOMBERG',
-      sourceUrl: 'https://bloomberg.com',
-      duration: '3 MIN',
-      audioTime: '03:40',
-      timeAgo: '42m ago',
+      id: 'startups-2',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'Quick-commerce leaders expand 10-minute delivery to 40 tier-2 cities.',
+      snippet: 'Micro-warehouse density and route-optimization AI spur 140% annual order growth outside metropolitan capitals.',
+      source: 'TECHCRUNCH',
+      sourceUrl: 'https://techcrunch.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
     },
+    {
+      id: 'startups-3',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'Bengaluru generative AI startup secures $80M Series B for enterprise reasoning.',
+      snippet: 'Domain-specific language models for legal, financial, and compliance workflows deployed across Fortune 500 clients.',
+      source: 'INC42',
+      sourceUrl: 'https://inc42.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'startups-4',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'Fintech unicorn receives payment aggregator license to expand MSME credit.',
+      snippet: 'Cash-flow backed lending algorithm reduces underwriting time to under 60 seconds for small merchant storefronts.',
+      source: 'YOURSTORY',
+      sourceUrl: 'https://yourstory.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+
+    // ================= 5. GLOBAL POLITICS (4+ stories) =================
     {
       id: 'global-politics-1',
       nicheId: 'global-politics',
       category: 'POLITICS',
-      title: 'Global trade ministers convene in Geneva to establish digital commerce standards.',
-      snippet: 'New cross-border framework focuses on AI sovereignty, zero-tariff digital goods, and encrypted cross-border transactions.',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'Global trade ministers convene in Geneva for digital commerce framework.',
+      snippet: 'New cross-border standards focus on AI sovereignty, encrypted payments, and zero tariffs on software goods.',
       source: 'REUTERS',
       sourceUrl: 'https://reuters.com',
-      duration: '4 MIN',
-      audioTime: '03:50',
-      timeAgo: '50m ago',
+      listenTime: '4 MIN LISTEN',
+      durationMinutes: '4 MIN',
     },
+    {
+      id: 'global-politics-2',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'UN General Assembly drafts landmark multilateral AI ethical treaty.',
+      snippet: 'Over 120 member states agree on foundational safety verification protocols for autonomous military and surveillance algorithms.',
+      source: 'BBC NEWS',
+      sourceUrl: 'https://bbc.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'global-politics-3',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'G20 finance deputies finalize unified cross-border tax transparency rules.',
+      snippet: 'Harmonized corporate digital revenue reporting aims to reduce tax arbitrage across multinational tech conglomerates.',
+      source: 'FINANCIAL TIMES',
+      sourceUrl: 'https://ft.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'global-politics-4',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'India and UK bilateral comprehensive trade treaty enters final signature stage.',
+      snippet: 'Pact lowers import tariffs on high-tech engineering goods and grants reciprocal working visas for service professionals.',
+      source: 'THE HINDU',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+
+    // ================= 6. SCIENCE (4+ stories) =================
     {
       id: 'science-1',
       nicheId: 'science',
       category: 'SCIENCE',
-      title: 'ISRO unveils timeline for next-generation modular space station modules.',
-      snippet: 'Bharatiya Antariksh Station receives structural approval with advanced indigenous environmental life support systems scheduled for 2028 deployment.',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'ISRO unveils roadmap for next-generation Bharatiya Space Station modules.',
+      snippet: 'Modular environmental life support systems receive technical approval for scheduled 2028 deployment.',
       source: 'REUTERS',
       sourceUrl: 'https://reuters.com',
-      duration: '2 MIN',
-      audioTime: '02:45',
-      timeAgo: '1h ago',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
     },
+    {
+      id: 'science-2',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'James Webb Telescope spots primordial galaxy cluster from dawn of universe.',
+      snippet: 'Spectroscopic data confirms giant stellar clusters formed just 300 million years after the Big Bang.',
+      source: 'NATURE',
+      sourceUrl: 'https://nature.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'science-3',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'Quantum computing team achieves 99.9% error-corrected logical qubit fidelity.',
+      snippet: 'Topological surface codes suppress phase decoherence, bringing fault-tolerant quantum chemistry simulation within reach.',
+      source: 'MIT TECH REVIEW',
+      sourceUrl: 'https://technologyreview.com',
+      listenTime: '4 MIN LISTEN',
+      durationMinutes: '4 MIN',
+    },
+    {
+      id: 'science-4',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'Indian deep-ocean submersible Matsya 6000 completes shallow-water harbor trials.',
+      snippet: 'Titanium-hull exploration vehicle certified for 6,000-meter abyssal trench mineral and hydrothermal vent surveys.',
+      source: 'THE HINDU',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+
+    // ================= 7. GEOPOLITICS (4+ stories) =================
     {
       id: 'geopolitics-1',
       nicheId: 'geopolitics',
       category: 'GEOPOLITICS',
-      title: 'India-Middle East-Europe Economic Corridor accelerates green maritime routes.',
-      snippet: 'Trilateral shipping ports complete standardized digital customs integration, reducing transit times between Mumbai and European hubs by 40%.',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'IMEC corridor accelerates green maritime shipping routes.',
+      snippet: 'Trilateral ports complete automated customs integration, cutting Mumbai-Europe shipping times by 40%.',
       source: 'FINANCIAL TIMES',
       sourceUrl: 'https://ft.com',
-      duration: '3 MIN',
-      audioTime: '03:05',
-      timeAgo: '1h ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'geopolitics-2',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'Quad maritime domain initiative expands satellite tracking in Indo-Pacific.',
+      snippet: 'Shared radar constellation offers real-time illegal fishing surveillance and dark-vessel interception to regional coast guards.',
+      source: 'REUTERS',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'geopolitics-3',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'BRICS summit establishes unified local currency settlement mechanism.',
+      snippet: 'Interbank clearing system facilitates non-dollar bilateral trades in crude oil, fertilizers, and agricultural commodities.',
+      source: 'BLOOMBERG',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'geopolitics-4',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'Northern Sea Route commercial cargo traffic reaches new historic peak.',
+      snippet: 'Ice-class container fleets leverage shortened transit corridors between East Asia and Scandinavian logistics terminals.',
+      source: 'WALL STREET JOURNAL',
+      sourceUrl: 'https://wsj.com',
+      listenTime: '4 MIN LISTEN',
+      durationMinutes: '4 MIN',
+    },
+
+    // ================= 8. HEALTH & MEDICINE (4+ stories) =================
     {
       id: 'health-medicine-1',
       nicheId: 'health-medicine',
       category: 'HEALTH & MEDICINE',
-      title: 'Breakthrough clinical trial demonstrates mRNA therapy targeting autoimmune conditions.',
-      snippet: 'New targeted biological approach eliminates adverse reactions while preserving normal immune system defense mechanisms.',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'mRNA clinical trial shows breakthrough in targeted autoimmune therapy.',
+      snippet: 'Novel biological engineering halts tissue inflammation without compromising general immunity.',
       source: 'NATURE',
       sourceUrl: 'https://nature.com',
-      duration: '3 MIN',
-      audioTime: '03:20',
-      timeAgo: '2h ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'health-medicine-2',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'AI-guided liquid biopsy detects stage-1 cancer markers with 96% accuracy.',
+      snippet: 'Circulating tumor DNA sequencing algorithm identifies early malignant mutations through single standard blood draw.',
+      source: 'THE LANCET',
+      sourceUrl: 'https://thelancet.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'health-medicine-3',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'CRISPR base-editing therapy approved for severe sickle-cell disorders.',
+      snippet: 'One-time stem cell gene repair restores healthy fetal hemoglobin production without unintended DNA double-strand breaks.',
+      source: 'NEW SCIENTIST',
+      sourceUrl: 'https://newscientist.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'health-medicine-4',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'ICMR commences phase-3 clinical evaluation for universal dengue vaccine candidate.',
+      snippet: 'Four-strain recombinant vaccine elicits robust neutralizing antibody response across multiple demographic cohorts.',
+      source: 'INDIAN EXPRESS',
+      sourceUrl: 'https://indianexpress.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+
+    // ================= 9. CLIMATE & ENERGY (4+ stories) =================
     {
       id: 'climate-energy-1',
       nicheId: 'climate-energy',
       category: 'CLIMATE & ENERGY',
-      title: 'India achieves 200GW renewable milestone ahead of scheduled timeline.',
-      snippet: 'Solar park expansion in Rajasthan and offshore wind projects in Tamil Nadu lead dramatic clean power transition.',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'India surpasses 200GW clean renewable energy milestone.',
+      snippet: 'Record-speed expansion of hybrid solar and offshore wind drives nationwide clean transition.',
       source: 'THE HINDU',
       sourceUrl: 'https://thehindu.com',
-      duration: '3 MIN',
-      audioTime: '02:55',
-      timeAgo: '2h ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'climate-energy-2',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'Sodium-ion grid battery enters commercial utility-scale deployment.',
+      snippet: 'Abundant salt-based chemistry eliminates rare lithium dependencies with superior thermal stability in extreme climates.',
+      source: 'BLOOMBERG GREEN',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'climate-energy-3',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'National Green Hydrogen mission awards $2.4B production electrolyzer incentives.',
+      snippet: 'Domestic chemical plants and green steel foundries sign 15-year purchase agreements for zero-carbon feedstock.',
+      source: 'ECONOMIC TIMES',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'climate-energy-4',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'Floating offshore wind turbines demonstrate resilience through tropical storms.',
+      snippet: 'Deepwater tension-leg platforms generate steady baseline electricity during high-wind coastal monsoons.',
+      source: 'REUTERS',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+
+    // ================= 10. SPORTS (4+ stories) =================
     {
       id: 'sports-1',
       nicheId: 'sports',
       category: 'SPORTS',
-      title: 'Indian Cricket Board announces next-gen high-performance analytics center in Bengaluru.',
-      snippet: 'AI motion capture and biometric strain tracking integrated into national squad conditioning ahead of upcoming world championship.',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'BCCI launches AI-powered biomechanics analytics center in Bengaluru.',
+      snippet: 'Motion tracking and neural workload models integrated into elite squad preparation.',
       source: 'ESPN CRICINFO',
       sourceUrl: 'https://espncricinfo.com',
-      duration: '2 MIN',
-      audioTime: '02:20',
-      timeAgo: '3h ago',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
     },
+    {
+      id: 'sports-2',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'Indian badminton contingent storms into World Super Series Championship finals.',
+      snippet: 'Dominant straight-set victories in men’s and mixed doubles propel national seeds into Olympic medal contention.',
+      source: 'HINDUSTAN TIMES',
+      sourceUrl: 'https://hindustantimes.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'sports-3',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'Formula 1 mandates 100% sustainable advanced synthetic e-fuels for 2026.',
+      snippet: 'Turbo-hybrid power units achieve net-zero direct carbon output while sustaining 1,000+ horsepower racing output.',
+      source: 'AUTOSPORT',
+      sourceUrl: 'https://autosport.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'sports-4',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'National High-Altitude Sports Institute opens in Ladakh for Olympic athletes.',
+      snippet: 'Hypoxic training suites and biometric recovery pods prepare track, marathon, and combat athletes for world tournaments.',
+      source: 'THE TRIBUNE',
+      sourceUrl: 'https://tribuneindia.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+
+    // ================= 11. CULTURE & ARTS (4+ stories) =================
     {
       id: 'culture-arts-1',
       nicheId: 'culture-arts',
-      category: 'CULTURE & ARTS',
-      title: 'National Museum launches 4K digital preservation archive for ancient Indian manuscripts.',
-      snippet: 'Over 100,000 rare Sanskrit and Prakrit manuscripts digitized and opened for global AI translation and research initiatives.',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'National digital museum opens 4K archive of ancient Indian manuscripts.',
+      snippet: 'Over 100,000 historical documents restored and published for international AI research.',
       source: 'BBC CULTURE',
       sourceUrl: 'https://bbc.com',
-      duration: '3 MIN',
-      audioTime: '03:00',
-      timeAgo: '3h ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
+    {
+      id: 'culture-arts-2',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'Jaipur Literature Festival hosts international symposium on vernacular storytelling.',
+      snippet: 'Authors and linguists explore preservation of endangered tribal folklore using multimodal generative translation.',
+      source: 'SCROLL.IN',
+      sourceUrl: 'https://scroll.in',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'culture-arts-3',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'UNESCO confers World Heritage status on Hoysala sacred temple ensembles.',
+      snippet: 'Intricate soapstone architecture and 12th-century geometric stone reliefs recognized for exceptional universal value.',
+      source: 'THE HINDU',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'culture-arts-4',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'Indian independent film wins Grand Jury Prize at Venice International Film Festival.',
+      snippet: 'Directorial debut celebrated for evocative rural cinematography and authentic regional dialect performances.',
+      source: 'VARIETY',
+      sourceUrl: 'https://variety.com',
+      listenTime: '2 MIN LISTEN',
+      durationMinutes: '2 MIN',
+    },
+
+    // ================= 12. LEGAL & POLICY (4+ stories) =================
     {
       id: 'legal-policy-1',
       nicheId: 'legal-policy',
       category: 'LEGAL & POLICY',
-      title: 'Supreme Court establishes nationwide digital evidence authentication standards.',
-      snippet: 'Cryptographic timestamping mandated for electronic judicial records to speed up commercial dispute resolutions across high courts.',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'Supreme Court implements cryptographic timestamping for court records.',
+      snippet: 'Digital evidence authentication standard set to expedite commercial dispute hearings.',
       source: 'LIVE LAW',
       sourceUrl: 'https://livelaw.in',
-      duration: '3 MIN',
-      audioTime: '03:10',
-      timeAgo: '4h ago',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'legal-policy-2',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'Government notifies rules for Digital Personal Data Protection Act.',
+      snippet: 'Strict consent architectures and fiduciary penalty frameworks mandate end-to-end data encryption for web platforms.',
+      source: 'BAR & BENCH',
+      sourceUrl: 'https://barandbench.com',
+      listenTime: '4 MIN LISTEN',
+      durationMinutes: '4 MIN',
+    },
+    {
+      id: 'legal-policy-3',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'Competition Commission releases antitrust guidelines on algorithmic collusion.',
+      snippet: 'Regulatory watchdog creates technical audit unit to detect automated dynamic pricing cartels among digital aggregators.',
+      source: 'ECONOMIC TIMES',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
+    },
+    {
+      id: 'legal-policy-4',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'Law Commission recommends dedicated digital fast-track courts across metropolitan hubs.',
+      snippet: 'AI-assisted transcript generation and virtual hearings targeted at slashing commercial contract case pendency by 60%.',
+      source: 'INDIAN EXPRESS',
+      sourceUrl: 'https://indianexpress.com',
+      listenTime: '3 MIN LISTEN',
+      durationMinutes: '3 MIN',
     },
   ],
   hi: [
+    // ================= 1. AI & TECH (4+ stories in Hindi) =================
     {
       id: 'ai-tech-1',
       nicheId: 'ai-tech',
-      category: 'तकनीक & AI',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
       title: 'एंथ्रोपिक ने 2M-टोकन मेमोरी और नेटिव टूल्स के साथ क्लॉड 4.5 लॉन्च किया।',
       snippet: 'क्लॉड 4.5 में एंटरप्राइज ऑटोमेशन, रीयल-टाइम कोडिंग और अभूतपूर्व मेमोरी क्षमता का समावेश किया गया है।',
       source: 'द वर्ज',
       sourceUrl: 'https://theverge.com',
-      duration: '3 मिनट',
-      audioTime: '03:15',
-      timeAgo: '10 मिनट पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'ai-tech-2',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'ओपनएआई ने ऑन-डिवाइस कंप्यूटिंग के लिए नया लाइटवेट मॉडल पेश किया।',
+      snippet: 'उपभोक्ता उपकरणों पर बिना क्लाउड सर्वर पर डेटा भेजे 100 मिलीसेकंड से कम समय में उत्तर देने की क्षमता।',
+      source: 'टेकक्रंच',
+      sourceUrl: 'https://techcrunch.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+    {
+      id: 'ai-tech-3',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'गूगल डीपमाइंड ने रोबोटिक सर्जरी नेविगेशन सिस्टम का सफल प्रदर्शन किया।',
+      snippet: 'जटिल लेप्रोस्कोपिक ऑपरेशन्स में सब-मिलीमीटर सटीकता के साथ सर्जन को रियल-टाइम मार्गदर्शन।',
+      source: 'वायर्ड',
+      sourceUrl: 'https://wired.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'ai-tech-4',
+      nicheId: 'ai-tech',
+      category: 'AI & TECH',
+      categoryBg: 'bg-[#231b38]',
+      categoryText: 'text-[#a78bfa]',
+      title: 'एनवीडिया ने लिक्विड कूलिंग आर्किटेक्चर के साथ ब्लैकवेल अल्ट्रा जीपीयू तेज किया।',
+      snippet: 'डेटा केंद्रों में ट्रिलियन-पैरामीटर एआई मॉडल के प्रशिक्षण में बिजली की खपत में 40% की कमी।',
+      source: 'रॉयटर्स',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '4 मिनट',
+      durationMinutes: '4 मिनट',
+    },
+
+    // ================= 2. MARKETS (4+ stories in Hindi) =================
+    {
+      id: 'markets-1',
+      nicheId: 'financial-markets',
+      category: 'GLOBAL',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'फेडरल रिजर्व की बैठक में सितंबर की नीति में बदलाव के संकेत मिले।',
+      snippet: 'अधिकारियों ने मुद्रास्फीति के लक्ष्य की ओर लौटने पर बढ़ते विश्वास को रेखांकित किया।',
+      source: 'ब्लूमबर्ग',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+    {
+      id: 'markets-2',
+      nicheId: 'financial-markets',
+      category: 'MARKETS',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'सेंसेक्स ने छुआ नया रिकॉर्ड स्तर; ₹15,000 करोड़ का विदेशी पूंजी निवेश आया।',
+      snippet: 'बैंकिंग और आईटी शेयरों में जोरदार खरीदारी से भारतीय शेयर बाजारों में ऐतिहासिक उछाल।',
+      source: 'इकोनॉमिक टाइम्स',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'markets-3',
+      nicheId: 'financial-markets',
+      category: 'MARKETS',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'आरबीआई ने रेपो दरें स्थिर रखीं; आर्थिक विकास अनुमान 7.2% किया।',
+      snippet: 'मौद्रिक नीति समिति ने मजबूत घरेलू मांग के बीच संतुलित नीति का रुख जारी रखा।',
+      source: 'मिंट',
+      sourceUrl: 'https://livemint.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'markets-4',
+      nicheId: 'financial-markets',
+      category: 'GLOBAL',
+      categoryBg: 'bg-[#102d2d]',
+      categoryText: 'text-[#2dd4bf]',
+      title: 'यूरोपीय बॉन्ड प्रतिफल में गिरावट; ब्याज दरों में और कटौती की संभावना।',
+      snippet: 'यूरोपीय सेंट्रल बैंक विनिर्माण उद्योग को गति देने के लिए मौद्रिक नीति को सरल बनाने की तैयारी में।',
+      source: 'फाइनेंशियल टाइम्स',
+      sourceUrl: 'https://ft.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+
+    // ================= 3. INDIAN BUSINESS (4+ stories in Hindi) =================
     {
       id: 'indian-business-1',
       nicheId: 'indian-business',
-      category: 'भारतीय व्यापार',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
       title: 'टाटा इलेक्ट्रॉनिक्स ने गुजरात के धोलेरा में $14 अरब के सेमीकंडक्टर फैब का विस्तार किया।',
       snippet: 'घरेलू ऑटोमोबाइल और इलेक्ट्रॉनिक्स कंपनियों के लिए चिप उत्पादन की समय-सीमा में तेजी लाई गई।',
       source: 'इकोनॉमिक टाइम्स',
       sourceUrl: 'https://economictimes.indiatimes.com',
-      duration: '3 मिनट',
-      audioTime: '03:10',
-      timeAgo: '18 मिनट पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'indian-business-2',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'रिलायंस रिटेल ने 50 शहरों में स्वचालित सप्लाई चेन हब का विस्तार किया।',
+      snippet: 'रोबोटिक सॉर्टिंग और अत्याधुनिक कोल्ड स्टोरेज से टियर-2 शहरों में डिलीवरी तेज।',
+      source: 'बिजनेस स्टैंडर्ड',
+      sourceUrl: 'https://business-standard.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'indian-business-3',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'अदाणी ग्रीन ने खावड़ा हाइब्रिड पार्क के लिए $750M का अंतरराष्ट्रीय ऋण हासिल किया।',
+      snippet: 'दुनिया के सबसे बड़े सौर और पवन ऊर्जा संयंत्र के निर्माण के लिए वैश्विक बैंकों से मिला निवेश।',
+      source: 'रॉयटर्स',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+    {
+      id: 'indian-business-4',
+      nicheId: 'indian-business',
+      category: 'INDIAN BUSINESS',
+      categoryBg: 'bg-[#291e14]',
+      categoryText: 'text-[#fb923c]',
+      title: 'एलएंडटी को वेस्टर्न डेडिकेटेड फ्रेट कॉरिडोर का बड़ा इंफ्रास्ट्रक्चर प्रोजेक्ट मिला।',
+      snippet: 'बंदरगाहों और भीतरी लॉजिस्टिक्स पार्कों के बीच मालगाड़ियों की रफ्तार दोगुनी होगी।',
+      source: 'मिंट',
+      sourceUrl: 'https://livemint.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+
+    // ================= 4. STARTUPS (4+ stories in Hindi) =================
     {
       id: 'startups-1',
       nicheId: 'startups',
-      category: 'स्टार्टअप',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'अदाणी एनर्जी ने फॉलो-ऑन ऑफरिंग में $1.2B जुटाए।',
+      snippet: 'ग्रीन एनर्जी विंग ने मामूली छूट पर अपनी शेयर बिक्री को सफलतापूर्वक पूरा किया।',
+      source: 'इकोनॉमिक टाइम्स',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'startups-2',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
       title: 'भारतीय क्विक-कॉमर्स कंपनियों ने 40 नए टियर-2 शहरों में 10 मिनट डिलीवरी शुरू की।',
       snippet: 'छोटे शहरों में ऑनलाइन डिलीवरी की मांग में 140% की बढ़ोतरी के बाद नए डार्क स्टोर्स का जाल बिछाया जा रहा है।',
       source: 'टेकक्रंच',
       sourceUrl: 'https://techcrunch.com',
-      duration: '2 मिनट',
-      audioTime: '02:30',
-      timeAgo: '24 मिनट पहले',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
     },
     {
-      id: 'financial-markets-1',
-      nicheId: 'financial-markets',
-      category: 'बाजार',
-      title: 'सेंसेक्स ने छुआ नया रिकॉर्ड स्तर; ₹15,000 करोड़ का विदेशी पूंजी निवेश आया।',
-      snippet: 'आईटी और सेमीकंडक्टर सेक्टर के शेयरों में जोरदार तेजी के चलते भारतीय शेयर बाजारों में नया उत्साह देखने को मिला।',
-      source: 'ब्लूमबर्ग',
-      sourceUrl: 'https://bloomberg.com',
-      duration: '3 मिनट',
-      audioTime: '03:40',
-      timeAgo: '42 मिनट पहले',
+      id: 'startups-3',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'बेंगलुरु के जनरेटिव एआई स्टार्टअप को एंटरप्राइज मॉडल्स के लिए $80M की फंडिंग।',
+      snippet: 'कानूनी, वित्तीय और अनुपालन प्रक्रियाओं के लिए स्वदेशी एआई समाधानों की वैश्विक मांग।',
+      source: 'इंक42',
+      sourceUrl: 'https://inc42.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'startups-4',
+      nicheId: 'startups',
+      category: 'STARTUPS',
+      categoryBg: 'bg-[#132c23]',
+      categoryText: 'text-[#34d399]',
+      title: 'फिनटेक यूनिकॉर्न को एमएसएमई ऋण विस्तार के लिए पेमेंट एग्रीगेटर लाइसेंस प्राप्त।',
+      snippet: 'छोटे व्यापारियों के लिए 60 सेकंड में कैश-फ्लो आधारित डिजिटल लोन स्वीकृत।',
+      source: 'योरस्टोरी',
+      sourceUrl: 'https://yourstory.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+
+    // ================= 5. GLOBAL POLITICS (4+ stories in Hindi) =================
     {
       id: 'global-politics-1',
       nicheId: 'global-politics',
-      category: 'राजनीति',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
       title: 'जिनेवा में वैश्विक व्यापार मंत्रियों की बैठक; डिजिटल कॉमर्स मानकों पर सहमति।',
       snippet: 'एआई संप्रभुता और सुरक्षित क्रॉस-बॉर्डर डिजिटल लेनदेन के लिए नए अंतरराष्ट्रीय नियम तैयार किए जा रहे हैं।',
       source: 'रॉयटर्स',
       sourceUrl: 'https://reuters.com',
-      duration: '4 मिनट',
-      audioTime: '03:50',
-      timeAgo: '50 मिनट पहले',
+      listenTime: '4 मिनट',
+      durationMinutes: '4 मिनट',
     },
+    {
+      id: 'global-politics-2',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'संयुक्त राष्ट्र महासभा में एआई नैतिकता पर ऐतिहासिक अंतरराष्ट्रीय संधि का मसौदा।',
+      snippet: '120 से अधिक देशों ने स्वायत्त प्रणालियों के लिए मूलभूत सुरक्षा मानकों पर हस्ताक्षर किए।',
+      source: 'बीबीसी',
+      sourceUrl: 'https://bbc.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'global-politics-3',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'जी-20 देशों ने वैश्विक डिजिटल टैक्स पारदर्शिता नियमों को अंतिम रूप दिया।',
+      snippet: 'बहुराष्ट्रीय तकनीकी कंपनियों के डिजिटल राजस्व पर समान कर व्यवस्था की ओर कदम।',
+      source: 'फाइनेंशियल टाइम्स',
+      sourceUrl: 'https://ft.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'global-politics-4',
+      nicheId: 'global-politics',
+      category: 'POLITICS',
+      categoryBg: 'bg-[#1f1d36]',
+      categoryText: 'text-[#818cf8]',
+      title: 'भारत और ब्रिटेन के बीच मुक्त व्यापार समझौता अंतिम हस्ताक्षर के चरण में।',
+      snippet: 'इंजीनियरिंग निर्यात और सेवा क्षेत्र के पेशेवरों के लिए नए अवसर खुलेंगे।',
+      source: 'द हिंदू',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+
+    // ================= 6. SCIENCE (4+ stories in Hindi) =================
     {
       id: 'science-1',
       nicheId: 'science',
-      category: 'विज्ञान',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
       title: 'इसरो ने भारतीय अंतरिक्ष स्टेशन के अगले चरण के मॉड्यूल का रोडमैप जारी किया।',
       snippet: 'स्वदेशी लाइफ सपोर्ट सिस्टम और अत्याधुनिक मॉड्यूल के साथ भारतीय स्पेस स्टेशन की तैयारी तेज।',
       source: 'रॉयटर्स',
       sourceUrl: 'https://reuters.com',
-      duration: '2 मिनट',
-      audioTime: '02:45',
-      timeAgo: '1 घंटा पहले',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
     },
+    {
+      id: 'science-2',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'जेम्स वेब टेलीस्कोप ने ब्रह्मांड के आरंभिक काल की विशाल आकाशगंगा खोजी।',
+      snippet: 'बिग बैंग के मात्र 30 करोड़ वर्ष बाद बने तारों के विशाल समूह का पहला स्पष्ट स्पेक्ट्रा प्राप्त।',
+      source: 'नेचर',
+      sourceUrl: 'https://nature.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'science-3',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'क्वांटम कंप्यूटिंग में 99.9% एरर-करेक्शन सटीकता का नया कीर्तिमान स्थापित।',
+      snippet: 'त्रुटिहीन क्वांटम सिमुलेशन से नई दवाओं और सामग्रियों की खोज में क्रांतिकारी प्रगति संभव।',
+      source: 'एमआईटी टेक रिव्यू',
+      sourceUrl: 'https://technologyreview.com',
+      listenTime: '4 मिनट',
+      durationMinutes: '4 मिनट',
+    },
+    {
+      id: 'science-4',
+      nicheId: 'science',
+      category: 'SCIENCE',
+      categoryBg: 'bg-[#1e1b4b]',
+      categoryText: 'text-[#93c5fd]',
+      title: 'भारत के गहरे समुद्र मिशन मत्स्य 6000 ने उथले जल परीक्षण सफलतापूर्वक पूरे किए।',
+      snippet: '6,000 मीटर की गहराई पर दुर्लभ खनिजों और जीवों के अध्ययन के लिए भारत की पनडुब्बी तैयार।',
+      source: 'द हिंदू',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+
+    // ================= 7. GEOPOLITICS (4+ stories in Hindi) =================
     {
       id: 'geopolitics-1',
       nicheId: 'geopolitics',
-      category: 'भू-राजनीति',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
       title: 'भारत-मध्य पूर्व-यूरोप आर्थिक गलियारे में हरित समुद्री मार्गों का विस्तार।',
       snippet: 'मुंबई और यूरोपीय बंदरगाहों के बीच माल ढुलाई समय में 40% की कमी लाने के लिए डिजिटल कस्टम्स शुरू।',
       source: 'फाइनेंशियल टाइम्स',
       sourceUrl: 'https://ft.com',
-      duration: '3 मिनट',
-      audioTime: '03:05',
-      timeAgo: '1 घंटा पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'geopolitics-2',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'क्वाड समुद्री पहल ने हिंद-प्रशांत क्षेत्र में उपग्रह निगरानी प्रणाली बढ़ाई।',
+      snippet: 'अवैध मछली पकड़ने और गुप्त जहाजों की गतिविधियों पर रियल-टाइम निगरानी की साझा व्यवस्था।',
+      source: 'रॉयटर्स',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'geopolitics-3',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'ब्रिक्स शिखर सम्मेलन में स्थानीय मुद्रा भुगतान प्रणाली पर व्यापक सहमति।',
+      snippet: 'कच्चे तेल और उर्वरकों के द्विपक्षीय व्यापार के लिए डॉलर-मुक्त डिजिटल सेटलमेंट शुरू।',
+      source: 'ब्लूमबर्ग',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'geopolitics-4',
+      nicheId: 'geopolitics',
+      category: 'GEOPOLITICS',
+      categoryBg: 'bg-[#2d1b28]',
+      categoryText: 'text-[#f472b6]',
+      title: 'उत्तरी समुद्री मार्ग पर मालवाहक जहाजों के आवागमन में नया रिकॉर्ड।',
+      snippet: 'एशिया और यूरोप के बीच छोटे समुद्री रास्तों का उपयोग करने वाले जहाजों की संख्या में वृद्धि।',
+      source: 'वॉल स्ट्रीट जर्नल',
+      sourceUrl: 'https://wsj.com',
+      listenTime: '4 मिनट',
+      durationMinutes: '4 मिनट',
+    },
+
+    // ================= 8. HEALTH & MEDICINE (4+ stories in Hindi) =================
     {
       id: 'health-medicine-1',
       nicheId: 'health-medicine',
-      category: 'स्वास्थ्य',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
       title: 'एमआरएनए थेरेपी के क्लिनिकल ट्रायल में ऑटोइम्यून बीमारियों के उपचार में बड़ी सफलता।',
-      snippet: 'नई बायो-टारगेटेड तकनीक ने सामान्य प्रतिरक्षा तंत्र को सुरक्षित रखते हुए असाध्य लक्षणों को समाप्त किया।',
+      snippet: 'नई बायो-टारगेटेड तकनीक ने सामान्य प्रतिरक्षा तंत्र को सुरक्षित रखते हुए सूजन समाप्त की।',
       source: 'नेचर',
       sourceUrl: 'https://nature.com',
-      duration: '3 मिनट',
-      audioTime: '03:20',
-      timeAgo: '2 घंटे पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'health-medicine-2',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'एआई-निर्देशित लिक्विड बायोप्सी ने 96% सटीकता से प्रारंभिक चरण के कैंसर का पता लगाया।',
+      snippet: 'साधारण रक्त परीक्षण के माध्यम से ट्यूमर डीएनए की समय रहते पहचान संभव।',
+      source: 'द लैंसेट',
+      sourceUrl: 'https://thelancet.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'health-medicine-3',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'सिकल-सेल विकारों के लिए क्रिस्पर जीन-एडिटिंग थेरेपी को मिली स्वीकृति।',
+      snippet: 'एक बार के उपचार से स्वस्थ हीमोग्लोबिन का उत्पादन पुनः सक्रिय।',
+      source: 'न्यू साइंटिस्ट',
+      sourceUrl: 'https://newscientist.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'health-medicine-4',
+      nicheId: 'health-medicine',
+      category: 'HEALTH & MEDICINE',
+      categoryBg: 'bg-[#1a2e26]',
+      categoryText: 'text-[#4ade80]',
+      title: 'आईसीएमआर ने डेंगू के स्वदेशी टीके के चरण-3 क्लिनिकल परीक्षण शुरू किए।',
+      snippet: 'चारों प्रकार के डेंगू वायरस के खिलाफ अत्यधिक प्रभावी एंटीबॉडी तैयार करने में सफल।',
+      source: 'इंडियन एक्सप्रेस',
+      sourceUrl: 'https://indianexpress.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+
+    // ================= 9. CLIMATE & ENERGY (4+ stories in Hindi) =================
     {
       id: 'climate-energy-1',
       nicheId: 'climate-energy',
-      category: 'पर्यावरण & ऊर्जा',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
       title: 'भारत ने तय समय से पहले 200 गीगावाट स्वच्छ नवीकरणीय ऊर्जा का लक्ष्य हासिल किया।',
       snippet: 'राजस्थान के सोलर पार्क्स और तमिलनाडु के पवन ऊर्जा प्रोजेक्ट्स के दम पर ऐतिहासिक उपलब्धि।',
       source: 'द हिंदू',
       sourceUrl: 'https://thehindu.com',
-      duration: '3 मिनट',
-      audioTime: '02:55',
-      timeAgo: '2 घंटे पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'climate-energy-2',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'सोडियम-आयन बैटरी ग्रिड स्टोरेज के लिए व्यावसायिक स्तर पर तैनात।',
+      snippet: 'सस्ता नमक आधारित विकल्प लिथियम की निर्भरता घटाने और अधिक सुरक्षा देने में सक्षम।',
+      source: 'ब्लूमबर्ग ग्रीन',
+      sourceUrl: 'https://bloomberg.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'climate-energy-3',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'राष्ट्रीय ग्रीन हाइड्रोजन मिशन ने $2.4B के इलेक्ट्रोलाइजर प्रोत्साहन स्वीकृत किए।',
+      snippet: 'रासायनिक और हरित इस्पात कारखानों ने शून्य-उत्सर्जन ईंधन के लिए दीर्घकालिक समझौते किए।',
+      source: 'इकोनॉमिक टाइम्स',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'climate-energy-4',
+      nicheId: 'climate-energy',
+      category: 'CLIMATE & ENERGY',
+      categoryBg: 'bg-[#142d1f]',
+      categoryText: 'text-[#86efac]',
+      title: 'समुद्री तूफानों के बीच तैरती पवन टर्बाइनों ने बिजली उत्पादन का रिकॉर्ड बनाया।',
+      snippet: 'गहरे समुद्र के प्लेटफॉर्म्स ने मानसूनी हवाओं में भी निर्बाध बिजली आपूर्ति की।',
+      source: 'रॉयटर्स',
+      sourceUrl: 'https://reuters.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+
+    // ================= 10. SPORTS (4+ stories in Hindi) =================
     {
       id: 'sports-1',
       nicheId: 'sports',
-      category: 'खेल',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
       title: 'बेंगलुरु में भारतीय क्रिकेट टीम के लिए अत्याधुनिक एआई एनालिटिक्स सेंटर शुरू।',
       snippet: 'खिलाड़ियों की फिटनेस और चोटों से बचाव के लिए मोशन-कैप्चर और बायोमेट्रिक तकनीक का उपयोग।',
       source: 'क्रिकइन्फो',
       sourceUrl: 'https://espncricinfo.com',
-      duration: '2 मिनट',
-      audioTime: '02:20',
-      timeAgo: '3 घंटे पहले',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
     },
+    {
+      id: 'sports-2',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'भारतीय बैडमिंटन खिलाड़ी विश्व सुपर सीरीज चैंपियनशिप के फाइनल में पहुंचे।',
+      snippet: 'पुरुष और मिश्रित युगल में लगातार सेटों में जीत दर्ज कर ओलंपिक पदक की दावेदारी मजबूत।',
+      source: 'हिंदुस्तान टाइम्स',
+      sourceUrl: 'https://hindustantimes.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'sports-3',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'फॉर्मूला 1 ने 2026 से 100% संधारणीय सिंथेटिक ई-ईंधन अनिवार्य किया।',
+      snippet: 'रेसिंग कारों के शक्तिशाली टर्बो इंजन अब पर्यावरण को बिना नुकसान पहुंचाए दौड़ेंगे।',
+      source: 'ऑटोस्पोर्ट',
+      sourceUrl: 'https://autosport.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'sports-4',
+      nicheId: 'sports',
+      category: 'SPORTS',
+      categoryBg: 'bg-[#281a18]',
+      categoryText: 'text-[#f87171]',
+      title: 'लद्दाख में ओलंपिक एथलीटों के लिए राष्ट्रीय उच्च-ऊंचाई खेल संस्थान का उद्घाटन।',
+      snippet: 'कठिन प्राकृतिक परिस्थितियों में एथलीटों के स्टैमिना और रिकवरी को बढ़ाने की विशेष सुविधा।',
+      source: 'द ट्रिब्यून',
+      sourceUrl: 'https://tribuneindia.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+
+    // ================= 11. CULTURE & ARTS (4+ stories in Hindi) =================
     {
       id: 'culture-arts-1',
       nicheId: 'culture-arts',
-      category: 'कला & संस्कृति',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
       title: 'प्राचीन भारतीय पांडुलिपियों के डिजिटलाइजेशन के लिए 4K डिजिटल आर्काइव का लोकार्पण।',
-      snippet: '1 लाख से अधिक दुर्लभ पांडुलिपियों का एआई अनुवाद और वैश्विक शोध के लिए ऑनलाइन संग्रह तैयार।',
+      snippet: '1 लाख से अधिक दुर्लभ पांडुलिपियों का एआई अनुवाद और वैश्विक शोध के लिए संग्रह तैयार।',
       source: 'बीबीसी',
       sourceUrl: 'https://bbc.com',
-      duration: '3 मिनट',
-      audioTime: '03:00',
-      timeAgo: '3 घंटे पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
+    {
+      id: 'culture-arts-2',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'जयपुर लिटरेचर फेस्टिवल में क्षेत्रीय लोक साहित्य के संरक्षण पर विचार-विमर्श।',
+      snippet: 'एआई अनुवाद तकनीक के माध्यम से लुप्तप्राय आदिवासी बोलियों और कहानियों के दस्तावेजीकरण की योजना।',
+      source: 'स्क्रोल.इन',
+      sourceUrl: 'https://scroll.in',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'culture-arts-3',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'यूनेस्को ने होयसला के पवित्र मंदिर समूहों को विश्व धरोहर स्थल घोषित किया।',
+      snippet: '12वीं सदी की नक्काशीदार सोपस्टोन वास्तुकला को वैश्विक सांस्कृतिक धरोहर की मान्यता।',
+      source: 'द हिंदू',
+      sourceUrl: 'https://thehindu.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'culture-arts-4',
+      nicheId: 'culture-arts',
+      category: 'CULTURE',
+      categoryBg: 'bg-[#2a1c35]',
+      categoryText: 'text-[#c084fc]',
+      title: 'भारतीय स्वतंत्र फिल्म ने वेनिस अंतरराष्ट्रीय फिल्म समारोह में शीर्ष पुरस्कार जीता।',
+      snippet: 'ग्रामीण जीवन के यथार्थवादी चित्रण और उत्कृष्ट क्षेत्रीय अभिनय के लिए अंतरराष्ट्रीय प्रशंसा।',
+      source: 'वैरायटी',
+      sourceUrl: 'https://variety.com',
+      listenTime: '2 मिनट',
+      durationMinutes: '2 मिनट',
+    },
+
+    // ================= 12. LEGAL & POLICY (4+ stories in Hindi) =================
     {
       id: 'legal-policy-1',
       nicheId: 'legal-policy',
-      category: 'कानून & नीति',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
       title: 'सुप्रीम कोर्ट ने अदालतों में डिजिटल साक्ष्यों के प्रमाणीकरण के नए मानक तय किए।',
       snippet: 'क्रिप्टोग्राफिक टाइमस्टैम्पिंग से वाणिज्यिक मुकदमों के शीघ्र निपटारे का रास्ता साफ हुआ।',
       source: 'लाइव लॉ',
       sourceUrl: 'https://livelaw.in',
-      duration: '3 मिनट',
-      audioTime: '03:10',
-      timeAgo: '4 घंटे पहले',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'legal-policy-2',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'सरकार ने डिजिटल पर्सनल डेटा प्रोटेक्शन एक्ट के नियमों को अधिसूचित किया।',
+      snippet: 'उपभोक्ताओं की सहमति और डेटा सुरक्षा के उल्लंघन पर भारी जुर्माने का कड़ा प्रावधान।',
+      source: 'बार एंड बेंच',
+      sourceUrl: 'https://barandbench.com',
+      listenTime: '4 मिनट',
+      durationMinutes: '4 मिनट',
+    },
+    {
+      id: 'legal-policy-3',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'भारतीय प्रतिस्पर्धा आयोग ने एल्गोरिद्मिक मूल्य निर्धारण पर दिशा-निर्देश जारी किए।',
+      snippet: 'डिजिटल प्लेटफॉर्मों पर अनुचित मूल्य वृद्धि और साठगांठ रोकने के लिए तकनीकी जांच इकाई गठित।',
+      source: 'इकोनॉमिक टाइम्स',
+      sourceUrl: 'https://economictimes.indiatimes.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
+    },
+    {
+      id: 'legal-policy-4',
+      nicheId: 'legal-policy',
+      category: 'LEGAL & POLICY',
+      categoryBg: 'bg-[#1e293b]',
+      categoryText: 'text-[#94a3b8]',
+      title: 'विधि आयोग ने प्रमुख शहरों में समर्पित डिजिटल वाणिज्यिक अदालतें बनाने की सिफारिश की।',
+      snippet: 'एआई-आधारित ट्रांसक्रिप्ट और वर्चुअल सुनवाई से वाणिज्यिक मामलों के त्वरित निपटान का लक्ष्य।',
+      source: 'इंडियन एक्सप्रेस',
+      sourceUrl: 'https://indianexpress.com',
+      listenTime: '3 मिनट',
+      durationMinutes: '3 मिनट',
     },
   ]
 };
@@ -313,15 +1319,14 @@ export default function FeedScreen({ onEditNiches }) {
 
   const allStories = language === 'hi' ? LIVE_NEWS_DATABASE.hi : LIVE_NEWS_DATABASE.en;
 
-  // Filter stories based on selected niches
+  // Filter stories strictly based on user's selected niches
   const userNicheStories = allStories.filter((story) => 
     selectedNiches.length === 0 || selectedNiches.includes(story.nicheId)
   );
-
   const displayStories = userNicheStories.length > 0 ? userNicheStories : allStories;
 
-  // Dynamic category tabs derived from user's selected niches
-  const categoryPills = [
+  // Horizontal category tabs derived from user's active niches
+  const categoriesList = [
     'All',
     ...selectedNiches.map(id => {
       const match = availableNiches.find(n => n.id === id);
@@ -329,53 +1334,232 @@ export default function FeedScreen({ onEditNiches }) {
     })
   ];
 
+  // UI State: 'stream' (Discover List) vs 'player' (Now Playing Screen)
+  const [viewMode, setViewMode] = useState('stream'); 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speedIndex, setSpeedIndex] = useState(0);
   const [savedIds, setSavedIds] = useState([]);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showSearchModal, setShowSearchModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [progressPercent, setProgressPercent] = useState(38);
+  const [currentAudioSeconds, setCurrentAudioSeconds] = useState(0);
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
 
-  // Filtered by selected tab
+  // Modals & Panels
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Load and listen for system / browser voices
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        setAvailableVoices(voices);
+      }
+    };
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, []);
+
+  // Dedicated finder for the clearest, most articulate Male news narrator voice
+  const getBestMaleVoice = () => {
+    if (!availableVoices || availableVoices.length === 0) return null;
+
+    if (selectedVoiceURI) {
+      const custom = availableVoices.find(v => v.voiceURI === selectedVoiceURI || v.name === selectedVoiceURI);
+      if (custom) return custom;
+    }
+
+    if (language === 'hi') {
+      const hindiMale = availableVoices.find(v => 
+        v.lang.includes('hi') && 
+        (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('madhur') || v.name.toLowerCase().includes('hemant') || v.name.toLowerCase().includes('ravi'))
+      );
+      if (hindiMale) return hindiMale;
+      return availableVoices.find(v => v.lang.includes('hi') || v.lang.includes('IN')) || null;
+    }
+
+    const englishVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('en'));
+
+    // 1. Premium Natural / Neural Male voices (Edge / Chrome)
+    const naturalMale = englishVoices.find(v => 
+      (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Online')) &&
+      (v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('christopher') || v.name.toLowerCase().includes('eric') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('male'))
+    );
+    if (naturalMale) return naturalMale;
+
+    // 2. Clear Google Studio voices
+    const googleMale = englishVoices.find(v => 
+      v.name.toLowerCase().includes('google') && 
+      (v.name.toLowerCase().includes('uk english male') || v.name.toLowerCase().includes('us english') || v.name.toLowerCase().includes('male'))
+    );
+    if (googleMale) return googleMale;
+
+    // 3. Clear Desktop male voices (David, Mark, George, Alex, Daniel, Oliver)
+    const desktopMale = englishVoices.find(v => 
+      v.name.toLowerCase().includes('david') || 
+      v.name.toLowerCase().includes('mark') || 
+      v.name.toLowerCase().includes('george') || 
+      v.name.toLowerCase().includes('alex') || 
+      v.name.toLowerCase().includes('daniel') || 
+      v.name.toLowerCase().includes('oliver') ||
+      v.name.toLowerCase().includes('tom') ||
+      v.name.toLowerCase().includes('fred')
+    );
+    if (desktopMale) return desktopMale;
+
+    // 4. Any English voice that does NOT contain known female names
+    const nonFemale = englishVoices.find(v => 
+      !['zira', 'jenny', 'aria', 'sonia', 'emma', 'ava', 'female', 'sara', 'ana', 'mia', 'victoria', 'karen', 'samantha', 'susan', 'hazel', 'stephanie', 'catherine', 'helena', 'neerja', 'swara'].some(f => v.name.toLowerCase().includes(f))
+    );
+    if (nonFemale) return nonFemale;
+
+    // 5. Default English voice
+    return englishVoices[0] || availableVoices[0] || null;
+  };
+
+  const activeMaleVoice = getBestMaleVoice();
+  const activeVoiceDisplayName = activeMaleVoice 
+    ? activeMaleVoice.name.replace(/Microsoft|Google|Desktop|Online \(Natural\)|English \(United States\)|English \(United Kingdom\)/gi, '').trim() || 'David'
+    : (language === 'hi' ? 'Madhur' : 'David');
+
+  // Filter list of English voices for user manual choice in settings
+  const englishVoicesList = availableVoices.filter(v => v.lang.toLowerCase().startsWith('en'));
+
+  // Duration Calculator in Seconds
+  const getStoryDurationSeconds = (story) => {
+    if (!story) return 180;
+    if (story.durationMinutes) {
+      const mins = parseInt(story.durationMinutes, 10);
+      if (!isNaN(mins) && mins > 0) return mins * 60;
+    }
+    if (story.listenTime) {
+      const mins = parseInt(story.listenTime, 10);
+      if (!isNaN(mins) && mins > 0) return mins * 60;
+    }
+    return 180;
+  };
+
+  // Formatter mm:ss
+  const formatTime = (totalSeconds) => {
+    if (isNaN(totalSeconds) || totalSeconds < 0) totalSeconds = 0;
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = Math.floor(totalSeconds % 60);
+    const formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
+    const formattedSecs = secs < 10 ? `0${secs}` : `${secs}`;
+    return `${formattedMins}:${formattedSecs}`;
+  };
+
+  // Filtered stories for active category tab
   const filteredStories = displayStories.filter((story) => {
     if (selectedCategory === 'All') return true;
-    const match = availableNiches.find(n => n.category.toLowerCase() === selectedCategory.toLowerCase());
-    if (match && story.nicheId === match.id) return true;
-    return story.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    const catLower = selectedCategory.toLowerCase();
+    const nicheMatch = availableNiches.find(n => n.category.toLowerCase() === catLower);
+    if (nicheMatch && story.nicheId === nicheMatch.id) return true;
+    return story.category.toLowerCase().includes(catLower);
   });
 
   const currentStory = filteredStories[currentStoryIndex] || filteredStories[0] || displayStories[0];
+  const totalStorySeconds = getStoryDurationSeconds(currentStory);
+  const progressPercent = totalStorySeconds > 0 
+    ? Math.min(100, Math.max(0, (currentAudioSeconds / totalStorySeconds) * 100))
+    : 0;
 
-  // Speech synthesis audio engine for real narration
+  const elapsedTimeFormatted = formatTime(currentAudioSeconds);
+  const remainingTimeFormatted = `-${formatTime(Math.max(0, totalStorySeconds - currentAudioSeconds))}`;
+
+  // Total Digest Duration across stories
+  const totalDigestSeconds = filteredStories.reduce((sum, s) => sum + getStoryDurationSeconds(s), 0);
+  const totalDigestMinutesFormatted = formatTime(totalDigestSeconds);
+
+  // Synchronized second timer tracking actual audio progress with playback rate
+  useEffect(() => {
+    let interval;
+    if (isPlaying) {
+      const speedMultiplier = speedIndex === 0 ? 1 : speedIndex === 1 ? 1.25 : speedIndex === 2 ? 1.5 : 2;
+      interval = setInterval(() => {
+        setCurrentAudioSeconds((prev) => {
+          const next = prev + 1;
+          if (next >= totalStorySeconds) {
+            if (currentStoryIndex < filteredStories.length - 1) {
+              setCurrentStoryIndex((p) => p + 1);
+              return 0;
+            } else {
+              setIsPlaying(false);
+              return 0;
+            }
+          }
+          return next;
+        });
+      }, 1000 / speedMultiplier);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, totalStorySeconds, speedIndex, currentStoryIndex, filteredStories.length]);
+
+  // Reset audio seconds on story switch
+  useEffect(() => {
+    setCurrentAudioSeconds(0);
+  }, [currentStoryIndex]);
+
+  // Speech synthesis audio playback (Crystal Clear Natural Enunciation)
   useEffect(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
     if (isPlaying && currentStory) {
       window.speechSynthesis.cancel();
-      const textToSpeak = `${currentStory.title}. ${currentStory.snippet}`;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.rate = speedIndex === 0 ? 1 : speedIndex === 1 ? 1.25 : speedIndex === 2 ? 1.5 : 2;
-      utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
 
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => 
-        language === 'hi' ? v.lang.includes('hi') : (v.lang.includes('en-IN') || v.name.includes('Aria') || v.name.includes('Natural') || v.name.includes('Google'))
-      );
-      if (preferredVoice) utterance.voice = preferredVoice;
+      // Clean punctuation formatting for crisp, understandable pauses
+      const cleanTitle = currentStory.title.trim().replace(/\.$/, '');
+      const cleanSnippet = currentStory.snippet.trim();
+      const textToSpeak = `${cleanTitle}. ... ${cleanSnippet}`;
+
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      // Calibrated news anchor pacing for maximum clarity and comprehension
+      const baseRate = language === 'hi' ? 0.95 : 0.90;
+      const speedMultiplier = speedIndex === 0 ? 1 : speedIndex === 1 ? 1.25 : speedIndex === 2 ? 1.5 : 2;
+      utterance.rate = baseRate * speedMultiplier;
+      utterance.pitch = 0.98; // Balanced, natural baritone tone
+      utterance.volume = 1.0;
+
+      if (activeMaleVoice) {
+        utterance.voice = activeMaleVoice;
+        utterance.lang = activeMaleVoice.lang || (language === 'hi' ? 'hi-IN' : 'en-US');
+      } else {
+        utterance.lang = language === 'hi' ? 'hi-IN' : 'en-US';
+      }
 
       utterance.onend = () => {
         if (currentStoryIndex < filteredStories.length - 1) {
           setCurrentStoryIndex(prev => prev + 1);
         } else {
           setIsPlaying(false);
-          setProgressPercent(0);
         }
       };
 
-      window.speechSynthesis.speak(utterance);
+      utterance.onerror = (e) => {
+        console.warn('Speech synthesis playback notice:', e);
+      };
+
+      const timer = setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 60);
+
+      return () => {
+        clearTimeout(timer);
+        window.speechSynthesis.cancel();
+      };
     } else {
       window.speechSynthesis.cancel();
     }
@@ -385,18 +1569,25 @@ export default function FeedScreen({ onEditNiches }) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [isPlaying, currentStoryIndex, language, speedIndex, currentStory]);
+  }, [isPlaying, currentStoryIndex, language, speedIndex, currentStory, activeMaleVoice]);
 
-  // Animated waveform progress simulation
-  useEffect(() => {
-    let interval;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setProgressPercent(prev => (prev >= 100 ? 0 : prev + 1));
-      }, 750);
+  // Seek on timeline click
+  const handleSeek = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newProgress = Math.max(0, Math.min(1, clickX / rect.width));
+    setCurrentAudioSeconds(Math.floor(newProgress * totalStorySeconds));
+  };
+
+  // Open Player View & Start Narration
+  const handleOpenNewsCard = (storyId) => {
+    const idx = filteredStories.findIndex(s => s.id === storyId);
+    if (idx !== -1) {
+      setCurrentStoryIndex(idx);
     }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+    setIsPlaying(true);
+    setViewMode('player');
+  };
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -426,11 +1617,14 @@ export default function FeedScreen({ onEditNiches }) {
     setSpeedIndex((prev) => (prev + 1) % SPEED_OPTIONS.length);
   };
 
-  const toggleSaveStory = (id) => {
+  const toggleSaveStory = (id, e) => {
+    if (e) e.stopPropagation();
     setSavedIds(prev => 
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
   };
+
+  const userName = user?.name ? user.name.split(' ')[0] : 'Aarav';
 
   // Dynamic Date string
   const dateHeader = (() => {
@@ -440,12 +1634,10 @@ export default function FeedScreen({ onEditNiches }) {
     return `${days[now.getDay()]} • ${now.getDate()} ${months[now.getMonth()]} • MORNING BRIEF`;
   })();
 
-  const userName = user?.name ? user.name.split(' ')[0] : (language === 'hi' ? 'आरव' : 'Aarav');
-
   return (
     <div className="min-h-screen w-full bg-[#050507] text-white flex items-center justify-center p-0 sm:p-6 sm:py-8 select-none font-sans">
       
-      {/* Ambient background glow */}
+      {/* Background ambient lighting */}
       <div 
         className="fixed inset-0 pointer-events-none opacity-25 sm:opacity-40 blur-[140px] transition-opacity"
         style={{
@@ -453,67 +1645,71 @@ export default function FeedScreen({ onEditNiches }) {
         }}
       />
 
-      {/* Main Container */}
-      <div className="relative w-full max-w-[420px] h-[100dvh] sm:h-[860px] sm:max-h-[94vh] sm:rounded-[52px] bg-[#0c0c10] sm:border-[9px] sm:border-[#1a1a20] sm:shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] overflow-hidden flex flex-col justify-between z-10 text-left">
+      {/* Main Container Phone Frame */}
+      <div className="relative w-full max-w-[420px] h-[100dvh] sm:h-[860px] sm:max-h-[94vh] sm:rounded-[52px] bg-[#09090c] sm:border-[9px] sm:border-[#1a1a20] sm:shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] overflow-hidden flex flex-col justify-between z-10 text-left">
         
-        {/* ================= 1. HEADER & STATUS BAR (REAL TIME) ================= */}
-        <div className="w-full relative z-20 px-6 pt-5 sm:px-7 sm:pt-6">
+        {/* ================= 1. STATUS BAR & TOP BAR ================= */}
+        <div className="w-full relative z-20 px-5 pt-3 sm:px-6 sm:pt-4 bg-[#09090c]">
           
-          {/* iOS Status Bar with Dynamic Wi-Fi / Tower Network Switching */}
+          {/* iOS Dynamic Status Bar (Real-time Battery, Wi-Fi/Cellular, Clock) */}
           <IosStatusBar showIsland={true} />
 
-          {/* Nuzio Brand Header Row + Search & Bell Icons */}
-          <div className="flex items-center justify-between mt-3.5 px-0.5">
+          {/* Top App Header Row */}
+          <div className="flex items-center justify-between mt-3 px-1">
+            
+            {/* Brand Logo: Soundwave + Nuzio AI */}
             <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-[2px] h-4">
-                <span className="w-[2px] h-2 bg-gradient-to-t from-[#6366f1] to-[#a855f7]" />
-                <span className="w-[2px] h-3.5 bg-gradient-to-t from-[#6366f1] to-[#a855f7]" />
-                <span className="w-[2px] h-4 bg-gradient-to-t from-[#818cf8] to-[#c084fc]" />
-                <span className="w-[2px] h-3 bg-gradient-to-t from-[#6366f1] to-[#a855f7]" />
+              <div className="flex items-center space-x-[2.5px] h-4">
+                <span className="w-[2.5px] h-2 bg-gradient-to-t from-[#6366f1] to-[#a855f7] rounded-full" />
+                <span className="w-[2.5px] h-3.5 bg-gradient-to-t from-[#6366f1] to-[#a855f7] rounded-full" />
+                <span className="w-[3px] h-4.5 bg-gradient-to-t from-[#818cf8] to-[#c084fc] rounded-full" />
+                <span className="w-[2.5px] h-3 bg-gradient-to-t from-[#6366f1] to-[#a855f7] rounded-full" />
               </div>
-              <div className="flex items-baseline">
-                <span className="text-[14.5px] font-bold text-white tracking-tight">Nuzio</span>
-                <span className="text-[14.5px] font-bold ml-1 text-[#8b5cf6]">AI</span>
+              <div className="flex items-baseline font-sans">
+                <span className="text-[15px] font-bold text-white tracking-tight">Nuzio</span>
+                <span className="text-[15px] font-bold ml-1 text-[#8b5cf6]">AI</span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            {/* Action Buttons: Search & Bell */}
+            <div className="flex items-center space-x-2.5">
               <button 
+                type="button"
                 onClick={() => setShowSearchModal(true)}
-                className="w-8 h-8 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer"
                 title="Search stories"
               >
-                <Search className="w-3.5 h-3.5 text-[#38bdf8]" />
+                <Search className="w-4 h-4 text-[#38bdf8]" />
               </button>
 
               <button 
-                onClick={() => {
-                  resetNichesOnboarding();
-                  if (onEditNiches) onEditNiches();
-                }}
-                className="w-8 h-8 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center relative transition-colors cursor-pointer"
-                title="Edit Niches"
+                type="button"
+                onClick={() => setShowNotificationsModal(true)}
+                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center relative transition-colors cursor-pointer"
+                title="Notifications"
               >
-                <Sliders className="w-3.5 h-3.5 text-[#a855f7]" />
+                <Bell className="w-4 h-4 text-[#fbbf24]" />
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#8b5cf6] ring-2 ring-[#181820]" />
               </button>
             </div>
           </div>
 
-          {/* ================= 2. DYNAMIC NICHE CATEGORY PILLS ================= */}
-          <div className="flex items-center space-x-2 mt-4 overflow-x-auto no-scrollbar py-1">
-            {categoryPills.map((cat) => {
+          {/* ================= 2. HORIZONTAL CATEGORY PILLS ================= */}
+          <div className="flex items-center space-x-2 mt-4 overflow-x-auto no-scrollbar pb-2.5 pt-1">
+            {categoriesList.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
                 <button
                   key={cat}
+                  type="button"
                   onClick={() => {
                     setSelectedCategory(cat);
                     setCurrentStoryIndex(0);
                   }}
-                  className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                  className={`px-4 py-1.5 rounded-full text-[12.5px] font-semibold transition-all whitespace-nowrap cursor-pointer ${
                     isSelected
-                      ? 'bg-[#34d399] text-[#092219] shadow-[0_2px_12px_rgba(52,211,153,0.35)]'
-                      : 'bg-[#15151c] text-[#8e8e9d] hover:text-white border border-white/[0.06]'
+                      ? 'bg-[#10b981] text-[#052e16] shadow-[0_0_12px_rgba(16,185,129,0.4)] font-bold'
+                      : 'bg-[#16161c] text-[#8e8e93] hover:text-white border border-white/[0.06]'
                   }`}
                 >
                   {cat}
@@ -522,232 +1718,358 @@ export default function FeedScreen({ onEditNiches }) {
             })}
           </div>
 
-          {/* ================= 3. MORNING BRIEF TITLE HEADER ================= */}
-          <div className="mt-4">
-            <div className="text-[11px] font-mono tracking-wider font-semibold text-[#6366f1] uppercase">
-              {dateHeader}
-            </div>
-
-            <h1 className="text-[25px] sm:text-[27px] font-bold text-white tracking-tight leading-tight mt-1">
-              {language === 'hi' ? `सुप्रभात, ${userName} —` : `Good morning, ${userName} —`}
-            </h1>
-            
-            <h2 className="text-[23px] sm:text-[25px] font-serif italic text-gradient-purple -mt-1 font-normal">
-              {language === 'hi' ? `${filteredStories.length} खास खबरें।` : `${filteredStories.length} things.`}
-            </h2>
-
-            {/* Audio live subheader */}
-            <div className="flex items-center space-x-2 text-[12px] text-zinc-400 mt-1.5 font-medium">
-              <span className="flex items-center gap-1.5 text-[#34d399] font-semibold">
-                <span className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
-                Audio live
-              </span>
-              <span>•</span>
-              <span>Voice: <strong className="text-white font-semibold">Aria</strong></span>
-              <span>•</span>
-              <span>{filteredStories.length} stories</span>
-              <span>•</span>
-              <span>18:30</span>
-            </div>
-          </div>
+          {/* Subtle thin separator line */}
+          <div className="w-full h-[1px] bg-white/[0.06]" />
 
         </div>
 
-        {/* ================= 4. MAIN NEWS PLAYER CARD ================= */}
-        <div className="flex-1 px-6 sm:px-7 py-2.5 flex flex-col justify-center">
-          <div className="w-full bg-[#13131a] border border-white/[0.09] rounded-[30px] p-5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between relative overflow-hidden">
-            
-            {/* Ambient inner soft glow */}
-            <div 
-              className="pointer-events-none absolute -top-10 -right-10 w-44 h-44 rounded-full opacity-20 blur-[50px]"
-              style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)' }}
-            />
+        {/* ================= 3. CONTENT AREA: STREAM vs AUDIO PLAYER ================= */}
+        {viewMode === 'stream' ? (
+          /* ================= DISCOVER CARDS STREAM (SCREENSHOT 1) ================= */
+          <div className="flex-1 overflow-y-auto px-5 py-3 space-y-3.5 no-scrollbar">
+            {filteredStories.map((story) => {
+              const isThisPlaying = isPlaying && currentStory.id === story.id;
+              const isSaved = savedIds.includes(story.id);
 
-            {/* Top pill & Counter row */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#201c34] border border-[#8b5cf6]/30 text-[#a855f7] text-[10.5px] font-mono font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] animate-ping" />
-                <span>NOW PLAYING • {currentStory.category}</span>
-              </div>
-
-              <span className="text-[12px] font-mono text-zinc-400 font-semibold tracking-wider">
-                0{currentStoryIndex + 1} / 0{filteredStories.length}
-              </span>
-            </div>
-
-            {/* Big Headline */}
-            <h3 className="text-[19px] sm:text-[21px] font-bold text-white leading-snug mt-3 font-serif">
-              {currentStory.title}
-            </h3>
-
-            {/* Source & Metadata row */}
-            <div className="flex items-center justify-between text-[11px] font-mono tracking-wider text-zinc-400 mt-2">
-              <div className="flex items-center space-x-2">
-                <span className="text-[#818cf8] font-bold">{currentStory.source}</span>
-                <span>•</span>
-                <span>{currentStory.duration}</span>
-                <span>•</span>
-                <a 
-                  href={currentStory.sourceUrl} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="text-[#34d399] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
-                >
-                  SOURCE <ExternalLink className="w-2.5 h-2.5" />
-                </a>
-              </div>
-
-              <button
-                onClick={() => toggleSaveStory(currentStory.id)}
-                className={`flex items-center gap-1 uppercase transition-colors cursor-pointer ${
-                  savedIds.includes(currentStory.id) ? 'text-[#8b5cf6] font-bold' : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                {savedIds.includes(currentStory.id) ? '✓ SAVED' : '+ SAVE'}
-              </button>
-            </div>
-
-            {/* Subtitle Snippet */}
-            <p className="text-[12px] text-zinc-500 mt-2 line-clamp-1">
-              {currentStory.snippet}
-            </p>
-
-            {/* Waveform Visualizer */}
-            <div className="mt-4 mb-2">
-              <div className="flex items-end justify-between h-8 px-1 mb-2">
-                {[
-                  35, 60, 45, 80, 50, 95, 70, 40, 85, 100, 
-                  60, 75, 50, 90, 65, 45, 80, 55, 95, 40, 
-                  70, 85, 45, 60
-                ].map((height, idx) => {
-                  const isActive = (idx / 24) * 100 <= progressPercent;
-                  return (
-                    <span
-                      key={idx}
-                      className={`w-[4.5px] rounded-full transition-all duration-200 ${
-                        isActive
-                          ? 'bg-gradient-to-t from-[#6366f1] to-[#a855f7]'
-                          : 'bg-[#252533]'
-                      } ${isPlaying ? 'animate-pulse' : ''}`}
-                      style={{ 
-                        height: isPlaying ? `${Math.max(15, (height * (progressPercent % 10 + 5)) / 12)}%` : `${height * 0.7}%`,
-                        animationDelay: `${idx * 0.05}s`
-                      }}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Scrub timeline */}
-              <div className="w-full bg-[#20202c] h-[3.5px] rounded-full overflow-hidden">
+              return (
                 <div 
-                  className="h-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-full transition-all duration-300"
-                  style={{ width: `${progressPercent}%` }}
-                />
+                  key={story.id}
+                  onClick={() => handleOpenNewsCard(story.id)}
+                  className="w-full bg-[#141418] hover:bg-[#18181f] active:scale-[0.99] border border-white/[0.08] rounded-[22px] p-4.5 transition-all duration-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)] relative text-left cursor-pointer group"
+                >
+                  {/* Badges Row (Category Pill + Source Pill) */}
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold uppercase tracking-wider ${story.categoryBg || 'bg-[#231b38]'} ${story.categoryText || 'text-[#a78bfa]'}`}>
+                      {story.category}
+                    </span>
+
+                    <a
+                      href={story.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold bg-[#132b21] text-[#34d399] hover:bg-[#1a382b] flex items-center space-x-1 cursor-pointer transition-colors"
+                    >
+                      <span>{story.source}</span>
+                      <span className="text-[12px] leading-none">↗</span>
+                    </a>
+                  </div>
+
+                  {/* News Title */}
+                  <h3 className="text-[16px] sm:text-[17px] font-bold text-white leading-snug tracking-tight mt-2.5 group-hover:text-[#a78bfa] transition-colors">
+                    {story.title}
+                  </h3>
+
+                  {/* News Snippet / Summary */}
+                  <p className="text-[13px] text-[#9ca3af] leading-relaxed mt-1.5 line-clamp-2">
+                    {story.snippet}
+                  </p>
+
+                  {/* Card Footer Row */}
+                  <div className="flex items-center justify-between mt-3.5 pt-1">
+                    <span className="text-[11px] font-mono font-semibold tracking-wider text-[#6b7280] uppercase">
+                      {story.listenTime || '3 MIN LISTEN'}
+                    </span>
+
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenNewsCard(story.id);
+                        }}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-[0_2px_10px_rgba(52,211,153,0.3)] active:scale-95 ${
+                          isThisPlaying 
+                            ? 'bg-[#10b981] text-black animate-pulse' 
+                            : 'bg-[#34d399] hover:bg-[#2ed093] text-black'
+                        }`}
+                        title="Listen to story"
+                      >
+                        {isThisPlaying ? (
+                          <Pause className="w-4 h-4 fill-black text-black" />
+                        ) : (
+                          <Play className="w-4 h-4 fill-black text-black translate-x-0.5" />
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => toggleSaveStory(story.id, e)}
+                        className={`w-9 h-9 rounded-full bg-[#202028] hover:bg-[#282834] flex items-center justify-center transition-colors cursor-pointer ${
+                          isSaved ? 'text-amber-400' : 'text-[#6b7280] hover:text-white'
+                        }`}
+                        title={isSaved ? 'Bookmarked' : 'Bookmark story'}
+                      >
+                        <Star className={`w-4 h-4 ${isSaved ? 'fill-amber-400' : ''}`} />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* ================= DETAILED AUDIO PLAYER VIEW (SCREENSHOT 2) ================= */
+          <div className="flex-1 overflow-y-auto px-5 py-2.5 flex flex-col justify-between no-scrollbar">
+            
+            {/* Greeting & Digest Headline Header */}
+            <div className="text-left mt-1 mb-2">
+              <div className="text-[10.5px] font-mono tracking-wider font-bold text-[#818cf8] uppercase">
+                {dateHeader}
               </div>
 
-              {/* Time displays */}
-              <div className="flex justify-between text-[11px] font-mono text-zinc-500 mt-1 px-0.5">
-                <span>02:14</span>
-                <span>-03:47</span>
+              <h1 className="text-[24px] sm:text-[26px] font-serif font-bold text-white tracking-tight leading-tight mt-0.5">
+                {language === 'hi' ? `सुप्रभात, ${userName} —` : `Good morning, ${userName} —`}
+              </h1>
+
+              <h2 className="text-[22px] sm:text-[24px] font-serif italic text-gradient-purple -mt-1 font-normal">
+                {language === 'hi' ? `${filteredStories.length} खास खबरें।` : `${filteredStories.length} things.`}
+              </h2>
+
+              <div className="flex items-center space-x-2 text-[12px] text-zinc-400 mt-1 font-medium">
+                <span className="flex items-center gap-1.5 text-[#34d399] font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
+                  Audio live
+                </span>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => setShowSettingsModal(true)}
+                  className="hover:text-white transition-colors cursor-pointer"
+                  title="Click to customize AI voice"
+                >
+                  Voice: <strong className="text-white font-semibold">{activeVoiceDisplayName} (Male)</strong>
+                </button>
+                <span>•</span>
+                <span>{filteredStories.length} stories</span>
+                <span>•</span>
+                <span>{totalDigestMinutesFormatted}</span>
               </div>
             </div>
 
-            {/* Audio Controls Row */}
-            <div className="flex items-center justify-between pt-1">
+            {/* Main Audio Player Card */}
+            <div className="w-full bg-[#141419] border border-white/[0.09] rounded-[26px] p-4.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between relative overflow-hidden text-left">
               
-              {/* Skip Back */}
-              <button
-                onClick={handlePrevTrack}
-                className="w-11 h-11 rounded-full bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                title="Previous story"
-              >
-                <SkipBack className="w-4 h-4 fill-current" />
-              </button>
+              {/* Top Row: NOW PLAYING Pill & Counter */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#201c34] border border-[#8b5cf6]/30 text-[#818cf8] text-[10px] font-mono font-bold uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-[#818cf8] animate-ping" />
+                  <span>NOW PLAYING • {currentStory.category}</span>
+                </div>
 
-              {/* Large Glowing Play/Pause Button */}
-              <button
-                onClick={togglePlay}
-                className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#6366f1] via-[#7c3aed] to-[#a855f7] text-white flex items-center justify-center shadow-[0_0_25px_rgba(139,92,246,0.6)] active:scale-95 transition-transform cursor-pointer"
-                title={isPlaying ? 'Pause' : 'Play Live Audio'}
-              >
-                {isPlaying ? (
-                  <Pause className="w-6 h-6 fill-current" />
-                ) : (
-                  <Play className="w-6 h-6 fill-current translate-x-0.5" />
-                )}
-              </button>
+                <span className="text-[12px] font-mono text-zinc-400 font-bold tracking-wider">
+                  0{currentStoryIndex + 1} / 0{filteredStories.length}
+                </span>
+              </div>
 
-              {/* Skip Forward */}
-              <button
-                onClick={handleNextTrack}
-                className="w-11 h-11 rounded-full bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                title="Next story"
-              >
-                <SkipForward className="w-4 h-4 fill-current" />
-              </button>
+              {/* Big Headline in Serif Font */}
+              <h3 className="text-[18px] sm:text-[19px] font-serif font-bold text-white leading-snug tracking-tight mt-3">
+                {currentStory.title}
+              </h3>
 
-              {/* Playback Speed Button */}
-              <button
-                onClick={cycleSpeed}
-                className="px-3.5 py-2.5 rounded-2xl bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white font-mono text-[12px] font-semibold transition-colors cursor-pointer"
-                title="Playback speed"
-              >
-                {SPEED_OPTIONS[speedIndex]}
-              </button>
+              {/* Source & Action Links Row */}
+              <div className="flex items-center justify-between text-[11px] font-mono tracking-wider text-zinc-400 mt-2.5">
+                <div className="flex items-center space-x-2">
+                  <span className="text-[#a78bfa] font-bold">{currentStory.source}</span>
+                  <span>•</span>
+                  <span>{currentStory.durationMinutes || '3 MIN'}</span>
+                  <span>•</span>
+                  <a
+                    href={currentStory.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#34d399] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                  >
+                    <span>SOURCE</span>
+                    <span className="text-[11px] leading-none">↗</span>
+                  </a>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => toggleSaveStory(currentStory.id, e)}
+                  className={`flex items-center gap-1 uppercase transition-colors cursor-pointer font-mono text-[11px] ${
+                    savedIds.includes(currentStory.id) ? 'text-[#8b5cf6] font-bold' : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  {savedIds.includes(currentStory.id) ? '✓ SAVED' : '+ SAVE'}
+                </button>
+              </div>
+
+              {/* Snippet / Subtitle */}
+              <p className="text-[12px] text-zinc-500 mt-2 line-clamp-1">
+                {currentStory.snippet}
+              </p>
+
+              {/* Waveform Visualizer */}
+              <div className="mt-3.5 mb-1.5">
+                <div className="flex items-end justify-between h-8 px-1 mb-2">
+                  {[
+                    30, 55, 40, 75, 45, 90, 65, 35, 80, 100, 
+                    55, 70, 45, 85, 60, 40, 75, 50, 90, 35, 
+                    65, 80, 40, 55
+                  ].map((height, idx) => {
+                    const isActive = (idx / 24) * 100 <= progressPercent;
+                    return (
+                      <span
+                        key={idx}
+                        className={`w-[4.5px] rounded-full transition-all duration-200 ${
+                          isActive
+                            ? 'bg-[#7c5cfc]'
+                            : 'bg-[#252533]'
+                        } ${isPlaying ? 'animate-pulse' : ''}`}
+                        style={{ 
+                          height: isPlaying ? `${Math.max(15, (height * (Math.floor(currentAudioSeconds) % 10 + 5)) / 12)}%` : `${height * 0.7}%`,
+                          animationDelay: `${idx * 0.05}s`
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Progress bar line (Clickable / Seekable) */}
+                <div 
+                  onClick={handleSeek}
+                  className="w-full bg-[#20202c] hover:bg-[#282836] h-[5px] rounded-full overflow-hidden cursor-pointer transition-all relative"
+                  title="Click to seek audio"
+                >
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#6366f1] via-[#7c5cfc] to-[#a855f7] rounded-full transition-all duration-150"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+
+                {/* Synchronized Real-time displays */}
+                <div className="flex justify-between text-[11px] font-mono mt-1 px-0.5">
+                  <span className="font-semibold text-white">{elapsedTimeFormatted}</span>
+                  <span className="text-zinc-400 font-medium">{remainingTimeFormatted}</span>
+                </div>
+              </div>
+
+              {/* Audio Controls Row */}
+              <div className="flex items-center justify-between pt-1">
+                {/* Skip Back */}
+                <button
+                  type="button"
+                  onClick={handlePrevTrack}
+                  className="w-11 h-11 rounded-full bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  title="Previous story"
+                >
+                  <SkipBack className="w-4 h-4 fill-current" />
+                </button>
+
+                {/* Center Glowing Purple Play/Pause Button */}
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  className="w-16 h-16 rounded-full bg-[#7c5cfc] hover:bg-[#6d4df0] text-black flex items-center justify-center shadow-[0_0_25px_rgba(124,92,252,0.6)] active:scale-95 transition-transform cursor-pointer"
+                  title={isPlaying ? 'Pause' : 'Play Live Audio'}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6 fill-black text-black" />
+                  ) : (
+                    <Play className="w-6 h-6 fill-black text-black translate-x-0.5" />
+                  )}
+                </button>
+
+                {/* Skip Forward */}
+                <button
+                  type="button"
+                  onClick={handleNextTrack}
+                  className="w-11 h-11 rounded-full bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  title="Next story"
+                >
+                  <SkipForward className="w-4 h-4 fill-current" />
+                </button>
+
+                {/* Playback Speed Button */}
+                <button
+                  type="button"
+                  onClick={cycleSpeed}
+                  className="px-3 py-2 rounded-xl bg-[#1b1b24] hover:bg-[#23232f] text-zinc-300 hover:text-white font-mono text-[12px] font-semibold transition-colors cursor-pointer"
+                  title="Playback speed"
+                >
+                  {SPEED_OPTIONS[speedIndex]}
+                </button>
+              </div>
 
             </div>
 
           </div>
-        </div>
+        )}
 
-        {/* ================= 5. DOCKED NARRATING BAR & BOTTOM NAVIGATION ================= */}
-        <div className="w-full relative z-20 px-4 pb-3 sm:px-6 sm:pb-5">
+        {/* ================= 4. FLOATING DOCKED BAR & BOTTOM NAVIGATION ================= */}
+        <div className="w-full relative z-20 px-4 pb-3 sm:px-5 sm:pb-4 bg-gradient-to-t from-[#09090c] via-[#09090c] to-transparent">
           
-          {/* Now Narrating Bar with Floating Mini Play Button */}
-          <div className="w-full bg-[#121218] border border-white/[0.08] rounded-2xl px-4 py-2.5 mb-2 flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-[12px] text-[#34d399] font-medium truncate max-w-[70%]">
-              <span className="text-[13px]">🎙</span>
+          {/* Now Narrating Bar (Active when audio is playing or in player mode) */}
+          <div 
+            onClick={() => setViewMode(viewMode === 'player' ? 'stream' : 'player')}
+            className="w-full bg-[#121218] border border-white/[0.08] rounded-2xl px-4 py-2 mb-2 flex items-center justify-between cursor-pointer hover:bg-[#16161e] transition-colors"
+          >
+            <div className="flex items-center space-x-2 text-[11.5px] text-[#34d399] font-medium truncate max-w-[80%]">
+              <span className="text-[12px]">🎙</span>
               <span className="truncate">
                 Now narrating — {currentStory.title}
               </span>
             </div>
-
-            {/* Floating glowing Pause / Play Button */}
-            <button
-              onClick={togglePlay}
-              className="w-11 h-11 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.6)] shrink-0 cursor-pointer active:scale-95 transition-transform"
-            >
-              {isPlaying ? (
-                <Pause className="w-4 h-4 fill-current" />
-              ) : (
-                <Play className="w-4 h-4 fill-current translate-x-0.5" />
-              )}
-            </button>
+            <span className="text-[10px] font-mono font-bold text-zinc-400">
+              {viewMode === 'player' ? 'FEED ↑' : 'VIEW ↓'}
+            </span>
           </div>
 
-          {/* Bottom Bar: Discover & Settings */}
-          <div className="w-full bg-[#121218]/90 backdrop-blur-md rounded-2xl border border-white/[0.06] px-8 py-2.5 flex items-center justify-between text-zinc-400">
+          {/* Bottom Dock Navigation Bar */}
+          <div className="w-full bg-[#121217] border border-white/[0.08] rounded-[28px] px-8 py-2.5 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative">
+            
+            {/* Left Tab: DISCOVER */}
             <button 
+              type="button"
               onClick={() => {
+                setViewMode('stream');
                 setSelectedCategory('All');
               }}
-              className="flex flex-col items-center space-y-1 hover:text-white transition-colors cursor-pointer group"
+              className="flex flex-col items-center cursor-pointer group"
             >
-              <Compass className="w-4 h-4 group-hover:text-[#34d399]" />
-              <span className="text-[10px] font-semibold tracking-wider uppercase">Discover</span>
+              <Compass className={`w-5 h-5 transition-colors ${viewMode === 'stream' ? 'text-[#34d399]' : 'text-zinc-500 group-hover:text-white'}`} />
+              <span className={`text-[10px] font-extrabold tracking-widest uppercase mt-1 ${viewMode === 'stream' ? 'text-[#34d399]' : 'text-zinc-500 group-hover:text-white'}`}>
+                DISCOVER
+              </span>
+              {viewMode === 'stream' && (
+                <span className="w-5 h-[2.5px] bg-[#34d399] rounded-full mt-0.5" />
+              )}
             </button>
 
+            {/* Center: Large Floating Purple Play Button */}
+            <div className="absolute left-1/2 -translate-x-1/2 -top-5">
+              <button 
+                type="button"
+                onClick={togglePlay}
+                className="w-14 h-14 rounded-full bg-[#7c5cfc] hover:bg-[#6d4df0] text-black flex items-center justify-center shadow-[0_0_25px_rgba(124,92,252,0.6)] cursor-pointer active:scale-95 transition-transform"
+                title={isPlaying ? 'Pause Audio' : 'Play Audio Digest'}
+              >
+                {isPlaying ? (
+                  <Pause className="w-5 h-5 fill-black text-black" />
+                ) : (
+                  <Play className="w-5 h-5 fill-black text-black translate-x-0.5" />
+                )}
+              </button>
+            </div>
+
+            {/* Right Tab: SETTINGS */}
             <button 
+              type="button"
               onClick={() => setShowSettingsModal(true)}
-              className="flex flex-col items-center space-y-1 hover:text-white transition-colors cursor-pointer group"
+              className="flex flex-col items-center cursor-pointer group"
             >
-              <Settings className="w-4 h-4 group-hover:text-[#8b5cf6]" />
-              <span className="text-[10px] font-semibold tracking-wider uppercase">Settings</span>
+              <Settings className="w-5 h-5 text-zinc-500 group-hover:text-white transition-colors" />
+              <span className="text-[10px] font-extrabold tracking-widest uppercase mt-1 text-zinc-500 group-hover:text-white">
+                SETTINGS
+              </span>
             </button>
+
           </div>
 
-          {/* iOS Bottom Home Bar */}
+          {/* iOS Bottom Indicator Bar */}
           <div className="w-[130px] h-[4px] bg-white/20 rounded-full mx-auto mt-2 sm:hidden" />
         </div>
 
@@ -760,30 +2082,29 @@ export default function FeedScreen({ onEditNiches }) {
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Search live news topics..."
+                  placeholder="Search live news stories..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent text-[14px] text-white focus:outline-none placeholder-zinc-500"
                 />
               </div>
               <button 
+                type="button"
                 onClick={() => setShowSearchModal(false)}
-                className="p-1 text-zinc-400 hover:text-white"
+                className="p-1 text-zinc-400 hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-3 space-y-2">
+            <div className="flex-1 overflow-y-auto py-3 space-y-2 no-scrollbar">
               {allStories
                 .filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()) || s.snippet.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((story) => (
                   <div
                     key={story.id}
                     onClick={() => {
-                      const idx = filteredStories.findIndex(fs => fs.id === story.id);
-                      if (idx !== -1) setCurrentStoryIndex(idx);
-                      setIsPlaying(true);
+                      handleOpenNewsCard(story.id);
                       setShowSearchModal(false);
                     }}
                     className="p-3 bg-[#15151c] hover:bg-[#1d1d26] rounded-xl border border-white/[0.06] cursor-pointer transition-colors text-left"
@@ -796,34 +2117,70 @@ export default function FeedScreen({ onEditNiches }) {
           </div>
         )}
 
-        {/* ================= SETTINGS & ACCOUNT MODAL ================= */}
+        {/* ================= NOTIFICATIONS MODAL ================= */}
+        {showNotificationsModal && (
+          <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col justify-end p-4 animate-in fade-in">
+            <div className="w-full bg-[#111116] border border-white/[0.12] rounded-3xl p-5 text-left shadow-2xl relative">
+              <button
+                type="button"
+                onClick={() => setShowNotificationsModal(false)}
+                className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center space-x-2 mb-3">
+                <Bell className="w-5 h-5 text-[#fbbf24]" />
+                <h4 className="text-[16px] font-bold text-white">Daily News Notifications</h4>
+              </div>
+
+              <div className="space-y-2.5">
+                <div className="p-3 bg-[#171720] rounded-xl border border-white/[0.06]">
+                  <p className="text-[12.5px] text-white font-medium">Morning Audio Digest ready</p>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">Today's top stories tailored to your selected niches have been curated.</p>
+                  <span className="text-[10px] text-[#34d399] font-mono mt-1 block">10m ago</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowNotificationsModal(false)}
+                className="w-full mt-4 py-2 bg-white/[0.08] hover:bg-white/[0.12] text-white rounded-xl text-[12.5px] font-semibold cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ================= SETTINGS MODAL ================= */}
         {showSettingsModal && (
           <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col justify-end p-4 animate-in fade-in">
             <div className="w-full bg-[#111116] border border-white/[0.12] rounded-3xl p-5 text-left shadow-2xl relative">
               <button
+                type="button"
                 onClick={() => setShowSettingsModal(false)}
                 className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center space-x-3.5 pb-4 border-b border-white/[0.08]">
-                <img
-                  src={user?.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'User')}`}
-                  alt={user?.name || 'User'}
-                  className="w-12 h-12 rounded-full border-2 border-[#8b5cf6] p-0.5 object-cover"
-                />
+              <div className="flex items-center space-x-3 pb-3 border-b border-white/[0.08]">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#6366f1] to-[#a855f7] flex items-center justify-center font-bold text-white text-[16px]">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[15px] font-bold text-white">{user?.name || 'Nuzio Member'}</h4>
-                  <p className="text-[11.5px] text-zinc-400 truncate max-w-[200px]">{user?.email}</p>
-                  <span className="text-[10.5px] text-[#34d399] font-medium mt-0.5">● Connected to Database</span>
+                  <h4 className="text-[15px] font-bold text-white">{user?.name || 'Aarav'}</h4>
+                  <p className="text-[11.5px] text-zinc-400 truncate max-w-[200px]">{user?.email || 'aarav@nuzio.ai'}</p>
+                  <span className="text-[10.5px] text-[#34d399] font-medium mt-0.5">● Connected</span>
                 </div>
               </div>
 
               <div className="py-3 space-y-2.5 text-[13px]">
                 <div className="flex justify-between items-center py-1 text-zinc-400">
-                  <span>Selected Topics:</span>
+                  <span>Selected Niches:</span>
                   <button 
+                    type="button"
                     onClick={() => {
                       setShowSettingsModal(false);
                       resetNichesOnboarding();
@@ -839,6 +2196,7 @@ export default function FeedScreen({ onEditNiches }) {
                 <div className="flex justify-between items-center py-1 text-zinc-400">
                   <span>Language / भाषा:</span>
                   <button 
+                    type="button"
                     onClick={() => selectLanguage(language === 'en' ? 'hi' : 'en')}
                     className="text-[#a855f7] hover:text-white font-semibold flex items-center gap-1 cursor-pointer"
                   >
@@ -846,14 +2204,28 @@ export default function FeedScreen({ onEditNiches }) {
                     {language === 'en' ? 'English (Switch to हिन्दी)' : 'हिन्दी (Switch to English)'}
                   </button>
                 </div>
-                <div className="flex justify-between py-1 text-zinc-400">
-                  <span>Voice Agent:</span>
-                  <span className="text-white font-medium">Aria (Neural Studio Engine)</span>
-                </div>
+
+                {language === 'en' && englishVoicesList.length > 0 && (
+                  <div className="flex flex-col py-1 text-zinc-400 space-y-1">
+                    <span className="text-[11.5px] font-medium text-zinc-400">English Male Voice:</span>
+                    <select
+                      value={selectedVoiceURI || (activeMaleVoice ? activeMaleVoice.voiceURI || activeMaleVoice.name : '')}
+                      onChange={(e) => setSelectedVoiceURI(e.target.value)}
+                      className="w-full bg-[#1c1c24] border border-white/[0.12] rounded-xl px-2.5 py-1.5 text-[12px] text-[#38bdf8] font-medium focus:outline-none focus:border-[#38bdf8] cursor-pointer"
+                    >
+                      {englishVoicesList.map((v) => (
+                        <option key={v.voiceURI || v.name} value={v.voiceURI || v.name} className="bg-[#181820] text-white">
+                          {v.name.replace(/Microsoft|Google|Desktop|Online \(Natural\)/gi, '').trim()} ({v.lang})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-white/[0.08] flex flex-col space-y-2">
                 <button
+                  type="button"
                   onClick={() => {
                     setShowSettingsModal(false);
                     logout();
@@ -864,6 +2236,7 @@ export default function FeedScreen({ onEditNiches }) {
                   <span>Sign Out</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowSettingsModal(false)}
                   className="w-full py-2 text-zinc-400 hover:text-white text-[12.5px] font-medium text-center cursor-pointer"
                 >

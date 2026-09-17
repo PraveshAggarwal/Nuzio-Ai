@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @route   POST /api/auth/signup
- * @desc    Sign up a new user with email, password, and name (saved directly as-is in MongoDB)
+ * @desc    Sign up a new user with email, password, and name
  */
 router.post("/signup", async (req, res) => {
   try {
@@ -34,12 +34,12 @@ router.post("/signup", async (req, res) => {
     const newUser = await User.create({
       name: displayName,
       email: cleanEmail,
-      password: password, // Saved as-is in database
+      password: password,
     });
 
     return res.status(201).json({
       success: true,
-      message: "Account created and saved in database!",
+      message: "Account created successfully!",
       user: {
         id: newUser._id,
         name: newUser.name,
@@ -114,14 +114,15 @@ router.post("/login", async (req, res) => {
 });
 
 /**
- * @route   PUT /api/auth/preferences
- * @desc    Save user preferences (selected niches & language) in MongoDB User document
+ * @route   PUT, POST, PATCH /api/auth/preferences, /api/preferences, /api/auth/niches
+ * @desc    Save user preferences (selected niches & language) in User document
  */
-router.put("/preferences", async (req, res) => {
+const handleUpdatePreferences = async (req, res) => {
   try {
-    const { userId, email, niches, language } = req.body;
+    const { userId, id, _id, email, niches, language } = req.body || {};
+    const targetId = req.params?.id || userId || id || _id;
 
-    if (!userId && !email) {
+    if (!targetId && !email) {
       return res.status(400).json({
         success: false,
         message: "User ID or email is required to update preferences",
@@ -129,8 +130,12 @@ router.put("/preferences", async (req, res) => {
     }
 
     let user;
-    if (userId) {
-      user = await User.findById(userId);
+    if (targetId) {
+      try {
+        user = await User.findById(targetId);
+      } catch {
+        // Fallback to email search if targetId is not a valid ObjectId
+      }
     }
     if (!user && email) {
       user = await User.findOne({ email: email.trim().toLowerCase() });
@@ -154,7 +159,7 @@ router.put("/preferences", async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Preferences updated and saved in database!",
+      message: "Preferences updated successfully!",
       user: {
         id: user._id,
         name: user.name,
@@ -169,6 +174,56 @@ router.put("/preferences", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to update preferences",
+      error: error.message,
+    });
+  }
+};
+
+router.put("/preferences", handleUpdatePreferences);
+router.post("/preferences", handleUpdatePreferences);
+
+/**
+ * @route   GET /api/auth/preferences
+ * @desc    Fetch user preferences by email or userId
+ */
+router.get("/preferences", async (req, res) => {
+  try {
+    const { email, userId, id } = req.query;
+    const targetId = userId || id;
+
+    let user;
+    if (targetId) {
+      try {
+        user = await User.findById(targetId);
+      } catch {
+        // Fallback
+      }
+    }
+    if (!user && email) {
+      user = await User.findOne({ email: email.trim().toLowerCase() });
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        niches: user.niches || [],
+        language: user.language || "en",
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch preferences",
       error: error.message,
     });
   }

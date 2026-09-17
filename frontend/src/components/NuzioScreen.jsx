@@ -66,7 +66,7 @@ export default function NuzioScreen({ onBackToLanguage }) {
           password: password,
         });
         resetNichesOnboarding();
-        setSuccessMessage(language === 'hi' ? 'खाता सफलतापूर्वक डेटाबेस में सहेजा गया!' : 'Account created and saved in database!');
+        setSuccessMessage(language === 'hi' ? 'खाता सफलतापूर्वक बन गया!' : 'Account created successfully!');
       } else {
         await loginWithEmailAndPassword({
           email: email.trim().toLowerCase(),
