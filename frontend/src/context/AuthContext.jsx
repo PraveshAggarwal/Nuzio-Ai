@@ -13,6 +13,9 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+  const [isNewUser, setIsNewUser] = useState(() => {
+    return localStorage.getItem('nuzio_is_new_user') === 'true';
+  });
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
 
@@ -24,7 +27,7 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  // Sign up with Name, Email and Password (saved as-is in Database)
+  // Sign up with Name, Email and Password (NEW USER FLOW)
   const signupWithEmailAndPassword = async ({ name, email, password }) => {
     setLoading(true);
     setAuthError(null);
@@ -41,7 +44,16 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || 'Signup failed');
       }
 
-      localStorage.removeItem('nuzio_niches_completed');
+      if (data.token) {
+        localStorage.setItem('nuzio_token', data.token);
+      }
+      
+      // Mark as NEW user -> triggers Language -> Preferences onboarding
+      setIsNewUser(true);
+      localStorage.setItem('nuzio_is_new_user', 'true');
+      localStorage.setItem('nuzio_lang_selected', 'false');
+      localStorage.setItem('nuzio_niches_completed', 'false');
+
       setUser(data.user);
       return data;
     } catch (err) {
@@ -53,7 +65,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Log in with Email and Password
+  // Log in with Email and Password (EXISTING USER FLOW)
   const loginWithEmailAndPassword = async ({ email, password }) => {
     setLoading(true);
     setAuthError(null);
@@ -70,7 +82,23 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || 'Login failed');
       }
 
-      localStorage.removeItem('nuzio_niches_completed');
+      if (data.token) {
+        localStorage.setItem('nuzio_token', data.token);
+      }
+
+      // Mark as EXISTING user -> bypasses onboarding and goes directly to Main Feed
+      setIsNewUser(false);
+      localStorage.setItem('nuzio_is_new_user', 'false');
+      localStorage.setItem('nuzio_lang_selected', 'true');
+      localStorage.setItem('nuzio_niches_completed', 'true');
+
+      if (data.user.language) {
+        localStorage.setItem('nuzio_lang', data.user.language);
+      }
+      if (data.user.niches && data.user.niches.length > 0) {
+        localStorage.setItem('nuzio_selected_niches', JSON.stringify(data.user.niches));
+      }
+
       setUser(data.user);
       return data;
     } catch (err) {
@@ -86,9 +114,15 @@ export function AuthProvider({ children }) {
   const updateUserPreferences = async ({ niches, language }) => {
     if (!user) return;
     try {
+      const token = localStorage.getItem('nuzio_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${BACKEND_URL}/api/auth/preferences`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           userId: user.id || user._id,
           email: user.email,
@@ -109,7 +143,11 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    setIsNewUser(false);
+    localStorage.removeItem('nuzio_token');
     localStorage.removeItem('nuzio_user');
+    localStorage.removeItem('nuzio_is_new_user');
+    localStorage.removeItem('nuzio_lang_selected');
     localStorage.removeItem('nuzio_niches_completed');
   };
 
@@ -117,6 +155,8 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        isNewUser,
+        setIsNewUser,
         loading,
         authError,
         setAuthError,

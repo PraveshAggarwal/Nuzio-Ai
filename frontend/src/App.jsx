@@ -9,32 +9,52 @@ import { useNiches } from './context/NicheContext'
 import './App.css'
 
 function MainContent() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isNewUser, setIsNewUser } = useAuth()
   const { hasSelectedLanguage, confirmLanguageSelection } = useLanguage()
   const { hasCompletedNiches, confirmNiches, resetNichesOnboarding } = useNiches()
 
-  // STEP 1: First user selects language & location
-  if (!hasSelectedLanguage) {
-    return <LanguageScreen onContinue={confirmLanguageSelection} />
-  }
-
-  // STEP 2: After language selection, user authenticates (login / sign up)
+  // STEP 1: Always show Authentication page first if user is not authenticated
   if (!isAuthenticated) {
     return <NuzioScreen />
   }
 
-  // STEP 3: After authentication, user selects preferences / niches
-  if (!hasCompletedNiches) {
-    return <NichesScreen onContinue={confirmNiches} />
+  // STEP 2: If user is NEW (just signed up):
+  if (isNewUser) {
+    // 2a. First redirect to Language page
+    if (!hasSelectedLanguage) {
+      return <LanguageScreen onContinue={confirmLanguageSelection} />
+    }
+
+    // 2b. After language, redirect to Preferences / Niches page
+    if (!hasCompletedNiches) {
+      return (
+        <NichesScreen
+          onContinue={async (customNiches) => {
+            await confirmNiches(customNiches);
+            setIsNewUser(false);
+            localStorage.setItem('nuzio_is_new_user', 'false');
+          }}
+        />
+      )
+    }
   }
 
-  // STEP 4: After preferences are saved, redirect to the main page (Audio Digest Feed)
+  // STEP 3: If user already exists (logged in), redirect directly to Main Feed
   return <FeedScreen onEditNiches={resetNichesOnboarding} />
 }
 
 function NichesRoute() {
   const { confirmNiches } = useNiches()
-  return <NichesScreen onContinue={confirmNiches} />
+  const { setIsNewUser } = useAuth()
+  return (
+    <NichesScreen 
+      onContinue={async (niches) => {
+        await confirmNiches(niches);
+        setIsNewUser(false);
+        localStorage.setItem('nuzio_is_new_user', 'false');
+      }} 
+    />
+  )
 }
 
 function App() {
@@ -42,8 +62,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainContent />} />
-        <Route path="/language" element={<LanguageScreen />} />
         <Route path="/auth" element={<NuzioScreen />} />
+        <Route path="/language" element={<LanguageScreen />} />
         <Route path="/niches" element={<NichesRoute />} />
         <Route path="/feed" element={<MainContent />} />
         <Route path="*" element={<Navigate to="/" replace />} />

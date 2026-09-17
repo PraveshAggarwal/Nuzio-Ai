@@ -109,16 +109,13 @@ export default function NuzioScreen({ onBackToLanguage }) {
           {/* iOS Status Bar with Dynamic Wi-Fi / Tower Network Switching */}
           <IosStatusBar showIsland={true} />
 
-          {/* Quick Back to Language Button */}
-          <div className="flex items-center justify-between mt-3 px-1">
+          {/* Quick Language Toggle */}
+          <div className="flex items-center justify-end mt-3 px-1">
             <button
-              onClick={() => {
-                resetLanguageSelection();
-                if (onBackToLanguage) onBackToLanguage();
-              }}
-              className="flex items-center space-x-1 text-[12px] text-zinc-400 hover:text-white px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+              type="button"
+              onClick={() => selectLanguage(language === 'en' ? 'hi' : 'en')}
+              className="flex items-center space-x-1.5 text-[12px] text-zinc-400 hover:text-white px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
               <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
             </button>
           </div>

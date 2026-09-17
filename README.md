@@ -48,19 +48,22 @@
 
 ---
 
-## 🚀 User Onboarding Flow
+## 🚀 User Flow Architecture
 
 ```mermaid
-graph LR
-    A[1. Language Selection<br/>English / हिन्दी] --> B[2. Authentication<br/>Sign Up / Login]
-    B --> C[3. Niches Selection<br/>What moves your world?]
-    C --> D[4. Personalized Audio Feed<br/>Discover & Now Playing]
+graph TD
+    A[1. Authentication Screen<br/>Nuzio Landing & Sign In / Sign Up] -->|Existing User Logs In| D[Main Personalized Audio Feed<br/>Discover Stream & Audio Player]
+    A -->|New User Signs Up| B[2. Language Selection<br/>English / हिन्दी & Region]
+    B --> C[3. Niches Selection<br/>What moves your world? Pick up to 7]
+    C -->|Save Preferences| D
 ```
 
-1. **Step 1: Language Selection**: User selects their preferred language (**English** or **हिन्दी**) and region.
-2. **Step 2: Authentication**: User registers or signs in with their Email and Password.
-3. **Step 3: Preference Selection**: User selects their interest domains from 12 curated niches. Preferences are automatically saved in MongoDB.
-4. **Step 4: Discover Feed & Audio Player**: User arrives at their personalized audio news digest.
+1. **Step 1: Authentication Screen**: Initial entry point. Users can Sign In (Existing User) or Sign Up (New User).
+2. **Existing User Flow**: When an existing user logs in, they are redirected **directly to their Main Personalized Audio Feed**, bypassing onboarding.
+3. **New User Flow**: When a new user registers:
+   - **2a. Language Selection**: User selects their preferred language (**English** or **हिन्दी**) and region.
+   - **2b. Niches Selection**: User picks up to 7 interest domains from 12 curated categories.
+   - **2c. Save & Launch**: Preferences are persisted in MongoDB and user is redirected to their **Main Audio Feed**.
 
 ---
 
