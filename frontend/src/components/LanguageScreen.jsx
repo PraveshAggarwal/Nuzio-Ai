@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { MapPin } from 'lucide-react';
+import { MapPin, Lock } from 'lucide-react';
 import IosStatusBar from './IosStatusBar';
 
 export default function LanguageScreen({ onContinue }) {
@@ -28,8 +28,8 @@ export default function LanguageScreen({ onContinue }) {
     }
   };
 
-  const handleContinue = () => {
-    confirmLanguageSelection();
+  const handleContinue = async () => {
+    await confirmLanguageSelection(language);
     if (onContinue) onContinue();
   };
 
@@ -220,6 +220,15 @@ export default function LanguageScreen({ onContinue }) {
 
         {/* ================= BOTTOM / ACTION BUTTON ================= */}
         <div className="w-full relative z-10 flex flex-col items-center pb-1">
+          <div className="flex items-center space-x-1.5 text-[11.5px] text-zinc-400 mb-3 bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 rounded-full">
+            <Lock className="w-3 h-3 text-[#a855f7]" />
+            <span>
+              {language === 'hi' 
+                ? 'चयन के बाद भाषा नहीं बदली जा सकती' 
+                : 'Language cannot be changed once selected'}
+            </span>
+          </div>
+
           <button
             type="button"
             onClick={handleContinue}

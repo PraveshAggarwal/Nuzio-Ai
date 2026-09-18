@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const LanguageContext = createContext(null);
 
@@ -110,6 +111,8 @@ export const TRANSLATIONS = {
 };
 
 export function LanguageProvider({ children }) {
+  const { user, updateUserPreferences } = useAuth() || {};
+
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('nuzio_lang') || 'en';
   });
@@ -118,19 +121,47 @@ export function LanguageProvider({ children }) {
     return localStorage.getItem('nuzio_lang_selected') === 'true';
   });
 
+  // Sync saved language from user object if available
+  useEffect(() => {
+    if (user?.language) {
+      setLanguage(user.language);
+      localStorage.setItem('nuzio_lang', user.language);
+      setHasSelectedLanguage(true);
+      localStorage.setItem('nuzio_lang_selected', 'true');
+    }
+  }, [user?.language]);
+
+  /**
+   * Only allows selecting/toggling language if it has NOT been locked yet.
+   * Once locked (hasSelectedLanguage === true), language cannot be changed.
+   */
   const selectLanguage = (lang) => {
+    if (hasSelectedLanguage) {
+      console.warn('Language is locked and cannot be changed once selected.');
+      return;
+    }
     setLanguage(lang);
     localStorage.setItem('nuzio_lang', lang);
   };
 
-  const confirmLanguageSelection = () => {
+  /**
+   * Confirms and permanently locks the language selection for the user.
+   */
+  const confirmLanguageSelection = async (customLang) => {
+    const finalLang = customLang || language;
+    setLanguage(finalLang);
     setHasSelectedLanguage(true);
+    localStorage.setItem('nuzio_lang', finalLang);
     localStorage.setItem('nuzio_lang_selected', 'true');
-  };
 
-  const resetLanguageSelection = () => {
-    setHasSelectedLanguage(false);
-    localStorage.setItem('nuzio_lang_selected', 'false');
+    // Persist to database if user is authenticated
+    if (updateUserPreferences) {
+      try {
+        await updateUserPreferences({ language: finalLang });
+      } catch (err) {
+        console.error('Failed to sync confirmed language preference:', err);
+      }
+    }
   };
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -143,8 +174,8 @@ export function LanguageProvider({ children }) {
         locationAllowed,
         setLocationAllowed,
         hasSelectedLanguage,
+        isLanguageLocked: hasSelectedLanguage,
         confirmLanguageSelection,
-        resetLanguageSelection,
         t,
       }}
     >
@@ -160,3 +191,4 @@ export function useLanguage() {
   }
   return context;
 }
+

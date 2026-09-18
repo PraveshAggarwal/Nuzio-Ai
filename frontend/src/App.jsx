@@ -43,6 +43,17 @@ function MainContent() {
   return <FeedScreen onEditNiches={resetNichesOnboarding} />
 }
 
+function LanguageRoute() {
+  const { hasSelectedLanguage, confirmLanguageSelection } = useLanguage()
+  const { isAuthenticated } = useAuth()
+
+  if (hasSelectedLanguage || !isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
+  return <LanguageScreen onContinue={confirmLanguageSelection} />
+}
+
 function NichesRoute() {
   const { confirmNiches } = useNiches()
   const { setIsNewUser } = useAuth()
@@ -63,7 +74,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/auth" element={<NuzioScreen />} />
-        <Route path="/language" element={<LanguageScreen />} />
+        <Route path="/language" element={<LanguageRoute />} />
         <Route path="/niches" element={<NichesRoute />} />
         <Route path="/feed" element={<MainContent />} />
         <Route path="*" element={<Navigate to="/" replace />} />

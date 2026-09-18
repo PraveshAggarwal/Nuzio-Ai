@@ -8,13 +8,13 @@ import { NicheProvider } from './context/NicheContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <LanguageProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <LanguageProvider>
         <NicheProvider>
           <App />
         </NicheProvider>
-      </AuthProvider>
-    </LanguageProvider>
+      </LanguageProvider>
+    </AuthProvider>
   </StrictMode>,
 )
 

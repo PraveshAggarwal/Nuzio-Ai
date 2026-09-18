@@ -6,7 +6,7 @@ import IosStatusBar from './IosStatusBar';
 import { 
   Play, Pause, SkipBack, SkipForward, Search, Bell, 
   ExternalLink, Star, Compass, Settings, X, Sliders, 
-  Globe, LogOut, ChevronLeft
+  Globe, LogOut, ChevronLeft, Lock
 } from 'lucide-react';
 
 export const LIVE_NEWS_DATABASE = {
@@ -1343,7 +1343,6 @@ export default function FeedScreen({ onEditNiches }) {
   const [savedIds, setSavedIds] = useState([]);
   const [currentAudioSeconds, setCurrentAudioSeconds] = useState(0);
   const [availableVoices, setAvailableVoices] = useState([]);
-  const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
 
   // Modals & Panels
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -1372,41 +1371,40 @@ export default function FeedScreen({ onEditNiches }) {
     };
   }, []);
 
-  // Dedicated finder for the clearest, most articulate Male news narrator voice
-  const getBestMaleVoice = () => {
+  // Automatic voice selector matching the selected language
+  const getAutoVoice = () => {
     if (!availableVoices || availableVoices.length === 0) return null;
 
-    if (selectedVoiceURI) {
-      const custom = availableVoices.find(v => v.voiceURI === selectedVoiceURI || v.name === selectedVoiceURI);
-      if (custom) return custom;
-    }
-
     if (language === 'hi') {
-      const hindiMale = availableVoices.find(v => 
-        v.lang.includes('hi') && 
-        (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('madhur') || v.name.toLowerCase().includes('hemant') || v.name.toLowerCase().includes('ravi'))
+      // 1. Direct Hindi speech voice match
+      const hindiVoice = availableVoices.find(v => 
+        v.lang.toLowerCase().includes('hi') || v.lang.toLowerCase().includes('hin')
       );
-      if (hindiMale) return hindiMale;
-      return availableVoices.find(v => v.lang.includes('hi') || v.lang.includes('IN')) || null;
+      if (hindiVoice) return hindiVoice;
+
+      // 2. Indian region fallback
+      const indianVoice = availableVoices.find(v => v.lang.toLowerCase().includes('in'));
+      if (indianVoice) return indianVoice;
+
+      return null;
     }
 
+    // Default English: match high-clarity natural or standard English voices
     const englishVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('en'));
+    if (englishVoices.length === 0) return availableVoices[0] || null;
 
-    // 1. Premium Natural / Neural Male voices (Edge / Chrome)
     const naturalMale = englishVoices.find(v => 
       (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Online')) &&
       (v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('christopher') || v.name.toLowerCase().includes('eric') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('male'))
     );
     if (naturalMale) return naturalMale;
 
-    // 2. Clear Google Studio voices
     const googleMale = englishVoices.find(v => 
       v.name.toLowerCase().includes('google') && 
       (v.name.toLowerCase().includes('uk english male') || v.name.toLowerCase().includes('us english') || v.name.toLowerCase().includes('male'))
     );
     if (googleMale) return googleMale;
 
-    // 3. Clear Desktop male voices (David, Mark, George, Alex, Daniel, Oliver)
     const desktopMale = englishVoices.find(v => 
       v.name.toLowerCase().includes('david') || 
       v.name.toLowerCase().includes('mark') || 
@@ -1419,23 +1417,10 @@ export default function FeedScreen({ onEditNiches }) {
     );
     if (desktopMale) return desktopMale;
 
-    // 4. Any English voice that does NOT contain known female names
-    const nonFemale = englishVoices.find(v => 
-      !['zira', 'jenny', 'aria', 'sonia', 'emma', 'ava', 'female', 'sara', 'ana', 'mia', 'victoria', 'karen', 'samantha', 'susan', 'hazel', 'stephanie', 'catherine', 'helena', 'neerja', 'swara'].some(f => v.name.toLowerCase().includes(f))
-    );
-    if (nonFemale) return nonFemale;
-
-    // 5. Default English voice
     return englishVoices[0] || availableVoices[0] || null;
   };
 
-  const activeMaleVoice = getBestMaleVoice();
-  const activeVoiceDisplayName = activeMaleVoice 
-    ? activeMaleVoice.name.replace(/Microsoft|Google|Desktop|Online \(Natural\)|English \(United States\)|English \(United Kingdom\)/gi, '').trim() || 'David'
-    : (language === 'hi' ? 'Madhur' : 'David');
-
-  // Filter list of English voices for user manual choice in settings
-  const englishVoicesList = availableVoices.filter(v => v.lang.toLowerCase().startsWith('en'));
+  const activeVoice = getAutoVoice();
 
   // Duration Calculator in Seconds
   const getStoryDurationSeconds = (story) => {
@@ -1533,9 +1518,9 @@ export default function FeedScreen({ onEditNiches }) {
       utterance.pitch = 0.98; // Balanced, natural baritone tone
       utterance.volume = 1.0;
 
-      if (activeMaleVoice) {
-        utterance.voice = activeMaleVoice;
-        utterance.lang = activeMaleVoice.lang || (language === 'hi' ? 'hi-IN' : 'en-US');
+      if (activeVoice) {
+        utterance.voice = activeVoice;
+        utterance.lang = activeVoice.lang || (language === 'hi' ? 'hi-IN' : 'en-US');
       } else {
         utterance.lang = language === 'hi' ? 'hi-IN' : 'en-US';
       }
@@ -1569,7 +1554,7 @@ export default function FeedScreen({ onEditNiches }) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [isPlaying, currentStoryIndex, language, speedIndex, currentStory, activeMaleVoice]);
+  }, [isPlaying, currentStoryIndex, language, speedIndex, currentStory, activeVoice]);
 
   // Seek on timeline click
   const handleSeek = (e) => {
@@ -1833,14 +1818,9 @@ export default function FeedScreen({ onEditNiches }) {
                   Audio live
                 </span>
                 <span>•</span>
-                <button
-                  type="button"
-                  onClick={() => setShowSettingsModal(true)}
-                  className="hover:text-white transition-colors cursor-pointer"
-                  title="Click to customize AI voice"
-                >
-                  Voice: <strong className="text-white font-semibold">{activeVoiceDisplayName} (Male)</strong>
-                </button>
+                <span className="text-zinc-300">
+                  Narration: <strong className="text-white font-semibold">{language === 'hi' ? 'हिन्दी' : 'English'}</strong>
+                </span>
                 <span>•</span>
                 <span>{filteredStories.length} stories</span>
                 <span>•</span>
@@ -2195,32 +2175,23 @@ export default function FeedScreen({ onEditNiches }) {
 
                 <div className="flex justify-between items-center py-1 text-zinc-400">
                   <span>Language / भाषा:</span>
-                  <button 
-                    type="button"
-                    onClick={() => selectLanguage(language === 'en' ? 'hi' : 'en')}
-                    className="text-[#a855f7] hover:text-white font-semibold flex items-center gap-1 cursor-pointer"
-                  >
-                    <Globe className="w-3.5 h-3.5" />
-                    {language === 'en' ? 'English (Switch to हिन्दी)' : 'हिन्दी (Switch to English)'}
-                  </button>
+                  <div className="flex items-center gap-1.5 font-semibold text-zinc-300 bg-white/[0.05] border border-white/[0.08] px-2.5 py-1 rounded-xl text-[12px]">
+                    <Globe className="w-3.5 h-3.5 text-[#a855f7]" />
+                    <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
+                    <span className="text-[10px] text-zinc-400 flex items-center gap-0.5 ml-1 bg-white/[0.05] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                      <Lock className="w-2.5 h-2.5" />
+                      Locked
+                    </span>
+                  </div>
                 </div>
 
-                {language === 'en' && englishVoicesList.length > 0 && (
-                  <div className="flex flex-col py-1 text-zinc-400 space-y-1">
-                    <span className="text-[11.5px] font-medium text-zinc-400">English Male Voice:</span>
-                    <select
-                      value={selectedVoiceURI || (activeMaleVoice ? activeMaleVoice.voiceURI || activeMaleVoice.name : '')}
-                      onChange={(e) => setSelectedVoiceURI(e.target.value)}
-                      className="w-full bg-[#1c1c24] border border-white/[0.12] rounded-xl px-2.5 py-1.5 text-[12px] text-[#38bdf8] font-medium focus:outline-none focus:border-[#38bdf8] cursor-pointer"
-                    >
-                      {englishVoicesList.map((v) => (
-                        <option key={v.voiceURI || v.name} value={v.voiceURI || v.name} className="bg-[#181820] text-white">
-                          {v.name.replace(/Microsoft|Google|Desktop|Online \(Natural\)/gi, '').trim()} ({v.lang})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+                <div className="flex justify-between items-center py-1 text-zinc-400">
+                  <span>Audio Narration:</span>
+                  <span className="text-zinc-300 font-semibold text-[12px] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
+                    {language === 'hi' ? '🇮🇳 Hindi (Auto)' : '🇬🇧 English (Auto)'}
+                  </span>
+                </div>
               </div>
 
               <div className="pt-3 border-t border-white/[0.08] flex flex-col space-y-2">

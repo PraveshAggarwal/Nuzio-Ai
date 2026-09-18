@@ -10,7 +10,7 @@ import {
 
 export default function NuzioScreen({ onBackToLanguage }) {
   const { signupWithEmailAndPassword, loginWithEmailAndPassword, loading } = useAuth();
-  const { language, selectLanguage, resetLanguageSelection, t } = useLanguage();
+  const { language, selectLanguage, isLanguageLocked, t } = useLanguage();
   const { resetNichesOnboarding } = useNiches();
   
   // UI States
@@ -109,15 +109,22 @@ export default function NuzioScreen({ onBackToLanguage }) {
           {/* iOS Status Bar with Dynamic Wi-Fi / Tower Network Switching */}
           <IosStatusBar showIsland={true} />
 
-          {/* Quick Language Toggle */}
+          {/* Quick Language Indicator / Toggle */}
           <div className="flex items-center justify-end mt-3 px-1">
-            <button
-              type="button"
-              onClick={() => selectLanguage(language === 'en' ? 'hi' : 'en')}
-              className="flex items-center space-x-1.5 text-[12px] text-zinc-400 hover:text-white px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
-            >
-              <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
-            </button>
+            {isLanguageLocked ? (
+              <div className="flex items-center space-x-1.5 text-[11px] text-zinc-400 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.06]">
+                <Lock className="w-2.5 h-2.5 text-[#a855f7]" />
+                <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => selectLanguage(language === 'en' ? 'hi' : 'en')}
+                className="flex items-center space-x-1.5 text-[12px] text-zinc-400 hover:text-white px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+              >
+                <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
+              </button>
+            )}
           </div>
 
           {/* Nuzio AI Brand Header */}
