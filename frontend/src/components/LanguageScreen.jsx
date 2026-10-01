@@ -76,9 +76,6 @@ export default function LanguageScreen({ onContinue }) {
               <span className="text-[20px] font-bold text-white tracking-tight leading-none">
                 Nuzio
               </span>
-              <span className="text-[20px] font-bold ml-1 text-[#8b5cf6] leading-none drop-shadow-[0_0_12px_rgba(139,92,246,0.5)]">
-                AI
-              </span>
             </div>
           </div>
         </div>

@@ -250,4 +250,134 @@ router.get("/users", async (req, res) => {
   }
 });
 
+/**
+ * @route   GET /api/auth/bookmarks
+ * @desc    Get all bookmarks for a user
+ */
+router.get("/bookmarks", async (req, res) => {
+  try {
+    const { email, userId, id } = req.query;
+    const targetId = userId || id;
+
+    let user;
+    if (targetId) {
+      try { user = await User.findById(targetId); } catch {}
+    }
+    if (!user && email) {
+      user = await User.findOne({ email: email.trim().toLowerCase() });
+    }
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Return bookmarks sorted newest first
+    const sorted = [...(user.bookmarks || [])].sort(
+      (a, b) => new Date(b.savedAt) - new Date(a.savedAt)
+    );
+
+    return res.status(200).json({ success: true, bookmarks: sorted });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Failed to fetch bookmarks", error: error.message });
+  }
+});
+
+/**
+ * @route   POST /api/auth/bookmarks/toggle
+ * @desc    Toggle bookmark for a story (save if not saved, remove if already saved)
+ * @body    { userId|email, story: { id, title, snippet, category, ... } }
+ */
+router.post("/bookmarks/toggle", async (req, res) => {
+  try {
+    const { userId, id: bodyId, email, story } = req.body;
+    const targetId = req.params?.id || userId || bodyId;
+
+    if (!story || !story.id) {
+      return res.status(400).json({ success: false, message: "Story object with id is required" });
+    }
+
+    let user;
+    if (targetId) {
+      try { user = await User.findById(targetId); } catch {}
+    }
+    if (!user && email) {
+      user = await User.findOne({ email: email.trim().toLowerCase() });
+    }
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const alreadySaved = user.bookmarks.some((b) => b.id === story.id);
+
+    if (alreadySaved) {
+      // Remove bookmark
+      user.bookmarks = user.bookmarks.filter((b) => b.id !== story.id);
+    } else {
+      // Add bookmark with full story data
+      user.bookmarks.push({
+        id: story.id,
+        title: story.title,
+        snippet: story.snippet,
+        category: story.category,
+        categoryBg: story.categoryBg || '',
+        categoryText: story.categoryText || '',
+        source: story.source,
+        sourceUrl: story.sourceUrl || '',
+        listenTime: story.listenTime || '3 MIN LISTEN',
+        durationMinutes: story.durationMinutes || '3 MIN',
+        nicheId: story.nicheId || '',
+        savedAt: new Date(),
+      });
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      action: alreadySaved ? 'removed' : 'added',
+      bookmarks: [...user.bookmarks].sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)),
+    });
+  } catch (error) {
+    console.error("Bookmark Toggle Error:", error);
+    return res.status(500).json({ success: false, message: "Failed to toggle bookmark", error: error.message });
+  }
+});
+
+/**
+ * @route   DELETE /api/auth/bookmarks/:storyId
+ * @desc    Remove a specific bookmark by story ID
+ * @query   userId or email required
+ */
+router.delete("/bookmarks/:storyId", async (req, res) => {
+  try {
+    const { storyId } = req.params;
+    const { userId, email } = req.query;
+
+    let user;
+    if (userId) {
+      try { user = await User.findById(userId); } catch {}
+    }
+    if (!user && email) {
+      user = await User.findOne({ email: email.trim().toLowerCase() });
+    }
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    user.bookmarks = user.bookmarks.filter((b) => b.id !== storyId);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Bookmark removed",
+      bookmarks: user.bookmarks,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Failed to remove bookmark", error: error.message });
+  }
+});
+
 export default router;
+

@@ -26,6 +26,25 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "en",
     },
+    bookmarks: {
+      type: [
+        {
+          id: String,
+          title: String,
+          snippet: String,
+          category: String,
+          categoryBg: String,
+          categoryText: String,
+          source: String,
+          sourceUrl: String,
+          listenTime: String,
+          durationMinutes: String,
+          nicheId: String,
+          savedAt: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,

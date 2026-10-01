@@ -5,13 +5,16 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
 import { NicheProvider } from './context/NicheContext.jsx'
+import { BookmarkProvider } from './context/BookmarkContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
       <LanguageProvider>
         <NicheProvider>
-          <App />
+          <BookmarkProvider>
+            <App />
+          </BookmarkProvider>
         </NicheProvider>
       </LanguageProvider>
     </AuthProvider>

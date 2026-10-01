@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNiches } from '../context/NicheContext';
+import { useBookmarks } from '../context/BookmarkContext';
 import IosStatusBar from './IosStatusBar';
 import { 
   Play, Pause, SkipBack, SkipForward, Search, Bell, 
-  ExternalLink, Star, Compass, Settings, X, Sliders, 
-  Globe, LogOut, ChevronLeft, Lock, RefreshCw, Radio, Sparkles, Loader2
+  ExternalLink, Star, Bookmark, BookmarkCheck, Compass, Settings, X, Sliders, 
+  Globe, LogOut, ChevronLeft, Lock, RefreshCw, Radio, Sparkles, Loader2, Check
 } from 'lucide-react';
 
 export const LIVE_NEWS_DATABASE = {
@@ -1316,6 +1317,7 @@ export default function FeedScreen({ onEditNiches }) {
   const { user, logout } = useAuth();
   const { language, selectLanguage } = useLanguage();
   const { selectedNiches, availableNiches, resetNichesOnboarding } = useNiches();
+  const { bookmarks, isBookmarked, toggleBookmark, removeBookmark, isSyncing: isBookmarkSyncing } = useBookmarks();
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -1325,7 +1327,6 @@ export default function FeedScreen({ onEditNiches }) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speedIndex, setSpeedIndex] = useState(0);
-  const [savedIds, setSavedIds] = useState([]);
   const [currentAudioSeconds, setCurrentAudioSeconds] = useState(0);
   const [availableVoices, setAvailableVoices] = useState([]);
 
@@ -1340,6 +1341,10 @@ export default function FeedScreen({ onEditNiches }) {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showEditNichesModal, setShowEditNichesModal] = useState(false);
+  const [showSavedModal, setShowSavedModal] = useState(false);
+  const [tempSelectedNiches, setTempSelectedNiches] = useState([]);
+  const [isSavingNiches, setIsSavingNiches] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchApiResults, setSearchApiResults] = useState([]);
   const [isSearchingApi, setIsSearchingApi] = useState(false);
@@ -1352,6 +1357,41 @@ export default function FeedScreen({ onEditNiches }) {
       return match ? match.category : id;
     })
   ];
+
+  const handleOpenEditNiches = () => {
+    setTempSelectedNiches([...selectedNiches]);
+    setShowSettingsModal(false);
+    setShowEditNichesModal(true);
+  };
+
+  const toggleTempNiche = (nicheId) => {
+    setTempSelectedNiches((prev) => {
+      if (prev.includes(nicheId)) {
+        if (prev.length <= 1) return prev; // keep at least 1
+        return prev.filter((id) => id !== nicheId);
+      } else {
+        if (prev.length >= 7) return prev; // max 7
+        return [...prev, nicheId];
+      }
+    });
+  };
+
+  const handleSaveNiches = async () => {
+    setIsSavingNiches(true);
+    try {
+      await confirmNiches(tempSelectedNiches);
+      setShowEditNichesModal(false);
+      setSelectedCategory('All');
+      setCurrentStoryIndex(0);
+      setTimeout(() => {
+        fetchLiveNews(true);
+      }, 50);
+    } catch (err) {
+      console.error('Error saving niches:', err);
+    } finally {
+      setIsSavingNiches(false);
+    }
+  };
 
   // Fetch Live News from NewsData.io Backend API
   const fetchLiveNews = useCallback(async (isManual = false) => {
@@ -1656,11 +1696,13 @@ export default function FeedScreen({ onEditNiches }) {
     setSpeedIndex((prev) => (prev + 1) % SPEED_OPTIONS.length);
   };
 
-  const toggleSaveStory = (id, e) => {
+  const toggleSaveStory = (story, e) => {
     if (e) e.stopPropagation();
-    setSavedIds(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+    // story can be a story object OR just an id string (legacy call sites pass id)
+    const storyObj = typeof story === 'string'
+      ? filteredStories.find(s => s.id === story) || allStories.find(s => s.id === story) || { id: story }
+      : story;
+    toggleBookmark(storyObj);
   };
 
   const userName = user?.name ? user.name.split(' ')[0] : 'Aarav';
@@ -1674,7 +1716,7 @@ export default function FeedScreen({ onEditNiches }) {
   })();
 
   return (
-    <div className="min-h-screen w-full bg-[#050507] text-white flex items-center justify-center p-0 sm:p-6 sm:py-8 select-none font-sans">
+    <div className="h-screen w-full overflow-hidden bg-[#050507] text-white flex items-center justify-center select-none font-sans">
       
       {/* Background ambient lighting */}
       <div 
@@ -1706,7 +1748,6 @@ export default function FeedScreen({ onEditNiches }) {
               </div>
               <div className="flex items-baseline font-sans">
                 <span className="text-[15px] font-bold text-white tracking-tight">Nuzio</span>
-                <span className="text-[15px] font-bold ml-1 text-[#8b5cf6]">AI</span>
               </div>
 
               {/* Real-time NewsData.io LIVE Indicator */}
@@ -1723,7 +1764,7 @@ export default function FeedScreen({ onEditNiches }) {
                 onClick={() => fetchLiveNews(true)}
                 disabled={isRefreshing}
                 className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] active:scale-95 border border-white/[0.08] flex items-center justify-center transition-all cursor-pointer"
-                title="Refresh live news from newsdata.io"
+                title="Refresh live news"
               >
                 <RefreshCw className={`w-3.5 h-3.5 text-[#34d399] ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
@@ -1804,7 +1845,7 @@ export default function FeedScreen({ onEditNiches }) {
             ) : (
               filteredStories.map((story) => {
                 const isThisPlaying = isPlaying && currentStory.id === story.id;
-                const isSaved = savedIds.includes(story.id);
+                const isSaved = isBookmarked(story.id);
 
                 return (
                   <div 
@@ -1869,7 +1910,7 @@ export default function FeedScreen({ onEditNiches }) {
 
                         <button
                           type="button"
-                          onClick={(e) => toggleSaveStory(story.id, e)}
+                          onClick={(e) => toggleSaveStory(story, e)}
                           className={`w-9 h-9 rounded-full bg-[#202028] hover:bg-[#282834] flex items-center justify-center transition-colors cursor-pointer ${
                             isSaved ? 'text-amber-400' : 'text-[#6b7280] hover:text-white'
                           }`}
@@ -1959,12 +2000,12 @@ export default function FeedScreen({ onEditNiches }) {
 
                 <button
                   type="button"
-                  onClick={(e) => toggleSaveStory(currentStory.id, e)}
+                  onClick={(e) => toggleSaveStory(currentStory, e)}
                   className={`flex items-center gap-1 uppercase transition-colors cursor-pointer font-mono text-[11px] ${
-                    savedIds.includes(currentStory.id) ? 'text-[#8b5cf6] font-bold' : 'text-zinc-500 hover:text-zinc-300'
+                    isBookmarked(currentStory.id) ? 'text-[#8b5cf6] font-bold' : 'text-zinc-500 hover:text-zinc-300'
                   }`}
                 >
-                  {savedIds.includes(currentStory.id) ? '✓ SAVED' : '+ SAVE'}
+                  {isBookmarked(currentStory.id) ? '✓ SAVED' : '+ SAVE'}
                 </button>
               </div>
 
@@ -2065,6 +2106,66 @@ export default function FeedScreen({ onEditNiches }) {
                 </button>
               </div>
 
+              {/* ── Next / Previous Story Navigation ── */}
+              <div className="flex items-stretch gap-2 mt-3">
+
+                {/* ← Previous */}
+                <button
+                  type="button"
+                  onClick={handlePrevTrack}
+                  disabled={currentStoryIndex === 0}
+                  className={`flex-1 flex flex-col items-start gap-0.5 px-3.5 py-2.5 rounded-2xl border transition-all cursor-pointer group ${
+                    currentStoryIndex === 0
+                      ? 'opacity-30 cursor-not-allowed bg-[#111116] border-white/[0.04]'
+                      : 'bg-[#111116] hover:bg-[#181820] border-white/[0.08] hover:border-[#6366f1]/40 active:scale-[0.98]'
+                  }`}
+                  title="Previous story"
+                >
+                  <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1">
+                    <span>←</span>
+                    <span>{language === 'hi' ? 'पिछली' : 'Prev'}</span>
+                  </span>
+                  <span className="text-[11.5px] font-semibold text-zinc-300 group-hover:text-white line-clamp-1 transition-colors text-left w-full">
+                    {currentStoryIndex > 0
+                      ? allStories[currentStoryIndex - 1]?.title || '—'
+                      : (language === 'hi' ? 'शुरुआत' : 'Start of feed')}
+                  </span>
+                </button>
+
+                {/* Story Counter */}
+                <div className="flex flex-col items-center justify-center px-2 shrink-0">
+                  <span className="text-[11px] font-bold text-white font-mono leading-none">
+                    {currentStoryIndex + 1}
+                  </span>
+                  <span className="text-[9px] text-zinc-600 font-mono leading-none mt-0.5">
+                    / {allStories.length}
+                  </span>
+                </div>
+
+                {/* Next → */}
+                <button
+                  type="button"
+                  onClick={handleNextTrack}
+                  disabled={currentStoryIndex >= allStories.length - 1}
+                  className={`flex-1 flex flex-col items-end gap-0.5 px-3.5 py-2.5 rounded-2xl border transition-all cursor-pointer group ${
+                    currentStoryIndex >= allStories.length - 1
+                      ? 'opacity-30 cursor-not-allowed bg-[#111116] border-white/[0.04]'
+                      : 'bg-[#111116] hover:bg-[#181820] border-white/[0.08] hover:border-[#6366f1]/40 active:scale-[0.98]'
+                  }`}
+                  title="Next story"
+                >
+                  <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1">
+                    <span>{language === 'hi' ? 'अगली' : 'Next'}</span>
+                    <span>→</span>
+                  </span>
+                  <span className="text-[11.5px] font-semibold text-zinc-300 group-hover:text-white line-clamp-1 transition-colors text-right w-full">
+                    {currentStoryIndex < allStories.length - 1
+                      ? allStories[currentStoryIndex + 1]?.title || '—'
+                      : (language === 'hi' ? 'अंतिम खबर' : 'End of feed')}
+                  </span>
+                </button>
+              </div>
+
             </div>
 
           </div>
@@ -2110,22 +2211,6 @@ export default function FeedScreen({ onEditNiches }) {
               )}
             </button>
 
-            {/* Center: Large Floating Purple Play Button */}
-            <div className="absolute left-1/2 -translate-x-1/2 -top-5">
-              <button 
-                type="button"
-                onClick={togglePlay}
-                className="w-14 h-14 rounded-full bg-[#7c5cfc] hover:bg-[#6d4df0] text-black flex items-center justify-center shadow-[0_0_25px_rgba(124,92,252,0.6)] cursor-pointer active:scale-95 transition-transform"
-                title={isPlaying ? 'Pause Audio' : 'Play Audio Digest'}
-              >
-                {isPlaying ? (
-                  <Pause className="w-5 h-5 fill-black text-black" />
-                ) : (
-                  <Play className="w-5 h-5 fill-black text-black translate-x-0.5" />
-                )}
-              </button>
-            </div>
-
             {/* Right Tab: SETTINGS */}
             <button 
               type="button"
@@ -2153,7 +2238,7 @@ export default function FeedScreen({ onEditNiches }) {
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Search live news stories with NewsData.io..."
+                  placeholder="Search live news stories"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent text-[14px] text-white focus:outline-none placeholder-zinc-500"
@@ -2233,87 +2318,373 @@ export default function FeedScreen({ onEditNiches }) {
           </div>
         )}
 
-        {/* ================= SETTINGS MODAL ================= */}
+        {/* ================= SETTINGS MODAL (FULL SCREEN) ================= */}
         {showSettingsModal && (
-          <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col justify-end p-4 animate-in fade-in">
-            <div className="w-full bg-[#111116] border border-white/[0.12] rounded-3xl p-5 text-left shadow-2xl relative">
+          <div className="absolute inset-0 z-50 flex flex-col min-h-0 overflow-hidden" style={{ background: 'rgba(5,5,7,0.98)', backdropFilter: 'blur(24px)' }}>
+
+            {/* ── Header ── */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/[0.07] shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
+                  <Settings className="w-4 h-4 text-zinc-300" />
+                </div>
+                <div>
+                  <h2 className="text-[15px] font-bold text-white">{language === 'hi' ? 'सेटिंग्स' : 'Settings'}</h2>
+                  <p className="text-[11px] text-zinc-500 font-mono">{language === 'hi' ? 'अपना अनुभव कस्टमाइज़ करें' : 'Personalise your experience'}</p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowSettingsModal(false)}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 cursor-pointer"
+                className="w-8 h-8 rounded-full bg-white/[0.07] hover:bg-white/[0.14] flex items-center justify-center transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 text-zinc-400" />
               </button>
+            </div>
 
-              <div className="flex items-center space-x-3 pb-3 border-b border-white/[0.08]">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#6366f1] to-[#a855f7] flex items-center justify-center font-bold text-white text-[16px]">
+            {/* ── Scrollable Body ── */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 space-y-3 no-scrollbar">
+
+              {/* Profile Card */}
+              <div className="flex items-center gap-4 p-4 bg-[#111116] border border-white/[0.08] rounded-2xl">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#6366f1] to-[#a855f7] flex items-center justify-center font-bold text-white text-[20px] shrink-0 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
                 </div>
-                <div className="flex flex-col">
-                  <h4 className="text-[15px] font-bold text-white">{user?.name || 'Aarav'}</h4>
-                  <p className="text-[11.5px] text-zinc-400 truncate max-w-[200px]">{user?.email || 'aarav@nuzio.ai'}</p>
-                  <span className="text-[10.5px] text-[#34d399] font-medium mt-0.5">● Connected</span>
-                </div>
-              </div>
-
-              <div className="py-3 space-y-2.5 text-[13px]">
-                <div className="flex justify-between items-center py-1 text-zinc-400">
-                  <span>Selected Niches:</span>
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setShowSettingsModal(false);
-                      resetNichesOnboarding();
-                      if (onEditNiches) onEditNiches();
-                    }}
-                    className="text-[#38bdf8] hover:text-white font-semibold flex items-center gap-1 cursor-pointer"
-                  >
-                    <Sliders className="w-3.5 h-3.5" />
-                    <span>{selectedNiches.length} niches (Edit)</span>
-                  </button>
-                </div>
-
-                <div className="flex justify-between items-center py-1 text-zinc-400">
-                  <span>Language / भाषा:</span>
-                  <div className="flex items-center gap-1.5 font-semibold text-zinc-300 bg-white/[0.05] border border-white/[0.08] px-2.5 py-1 rounded-xl text-[12px]">
-                    <Globe className="w-3.5 h-3.5 text-[#a855f7]" />
-                    <span>{language === 'hi' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
-                    <span className="text-[10px] text-zinc-400 flex items-center gap-0.5 ml-1 bg-white/[0.05] px-1.5 py-0.5 rounded border border-white/[0.06]">
-                      <Lock className="w-2.5 h-2.5" />
-                      Locked
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center py-1 text-zinc-400">
-                  <span>Audio Narration:</span>
-                  <span className="text-zinc-300 font-semibold text-[12px] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
-                    {language === 'hi' ? '🇮🇳 Hindi (Auto)' : '🇬🇧 English (Auto)'}
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[15px] font-bold text-white truncate">{user?.name || 'Aarav'}</h4>
+                  <p className="text-[12px] text-zinc-400 truncate">{user?.email || 'aarav@nuzio.ai'}</p>
+                  <span className="inline-flex items-center gap-1 text-[11px] text-[#34d399] font-medium mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
+                    {language === 'hi' ? 'कनेक्टेड' : 'Connected'}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-white/[0.08] flex flex-col space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowSettingsModal(false);
-                    logout();
-                  }}
-                  className="w-full py-2.5 bg-[#ef4444]/10 hover:bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#f87171] rounded-xl font-semibold text-[13.5px] flex items-center justify-center space-x-2 transition-colors cursor-pointer"
-                >
+              {/* ── Section: Content ── */}
+              <p className="text-[10.5px] font-bold tracking-widest text-zinc-500 uppercase px-1 pt-1">{language === 'hi' ? 'सामग्री' : 'Content'}</p>
+
+              {/* Saved Stories */}
+              <button
+                type="button"
+                onClick={() => { setShowSettingsModal(false); setShowSavedModal(true); }}
+                className="w-full flex items-center justify-between p-4 bg-[#111116] hover:bg-[#16161e] border border-white/[0.08] hover:border-amber-500/30 rounded-2xl transition-all cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center group-hover:bg-amber-500/25 transition-colors">
+                    <BookmarkCheck className="w-4.5 h-4.5 text-amber-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[13.5px] font-semibold text-white">{language === 'hi' ? 'सहेजी गई खबरें' : 'Saved Stories'}</p>
+                    <p className="text-[11.5px] text-zinc-500">{bookmarks.length} {language === 'hi' ? 'सहेजी गई' : 'bookmarked'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {bookmarks.length > 0 && (
+                    <span className="bg-amber-500/25 text-amber-300 text-[11px] font-bold rounded-full px-2 py-0.5">{bookmarks.length}</span>
+                  )}
+                  <span className="text-zinc-600 group-hover:text-zinc-300 text-[16px] transition-colors">→</span>
+                </div>
+              </button>
+
+              {/* Niches */}
+              <button
+                type="button"
+                onClick={handleOpenEditNiches}
+                className="w-full flex items-center justify-between p-4 bg-[#111116] hover:bg-[#16161e] border border-white/[0.08] hover:border-[#6366f1]/40 rounded-2xl transition-all cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#6366f1]/15 border border-[#6366f1]/25 flex items-center justify-center group-hover:bg-[#6366f1]/25 transition-colors">
+                    <Sliders className="w-4.5 h-4.5 text-[#818cf8]" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[13.5px] font-semibold text-white">{language === 'hi' ? 'रुचियां (Niches)' : 'Selected Niches'}</p>
+                    <p className="text-[11.5px] text-zinc-500">{selectedNiches.length} / 7 {language === 'hi' ? 'सक्रिय विषय' : 'active topics'}</p>
+                  </div>
+                </div>
+                <span className="text-zinc-600 group-hover:text-zinc-300 text-[16px] transition-colors">→</span>
+              </button>
+
+              {/* ── Section: Language ── */}
+              <p className="text-[10.5px] font-bold tracking-widest text-zinc-500 uppercase px-1 pt-2">{language === 'hi' ? 'भाषा' : 'Language'}</p>
+
+              <div className="p-4 bg-[#111116] border border-white/[0.08] rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-[#a855f7]/15 border border-[#a855f7]/25 flex items-center justify-center">
+                      <Globe className="w-4.5 h-4.5 text-[#c084fc]" />
+                    </div>
+                    <div>
+                      <p className="text-[13.5px] font-semibold text-white">{language === 'hi' ? 'ऑडियो भाषा' : 'Audio Language'}</p>
+                      <p className="text-[11.5px] text-zinc-500 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
+                        {language === 'hi' ? 'हिन्दी सक्रिय' : 'English active'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* English / Hindi Toggle */}
+                <div className="grid grid-cols-2 gap-2 bg-[#0c0c10] p-1.5 rounded-xl border border-white/[0.06]">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (language !== 'en') { await selectLanguage('en'); setCurrentStoryIndex(0); }
+                    }}
+                    className={`py-2.5 px-3 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      language === 'en'
+                        ? 'bg-[#6366f1] text-white shadow-[0_2px_14px_rgba(99,102,241,0.5)]'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <span className="text-[11px] font-mono font-bold opacity-70">GB</span>
+                    <span>English</span>
+                    {language === 'en' && <Check className="w-3.5 h-3.5" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (language !== 'hi') { await selectLanguage('hi'); setCurrentStoryIndex(0); }
+                    }}
+                    className={`py-2.5 px-3 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      language === 'hi'
+                        ? 'bg-[#6366f1] text-white shadow-[0_2px_14px_rgba(99,102,241,0.5)]'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <span className="text-[11px] font-mono font-bold opacity-70">IN</span>
+                    <span>हिन्दी</span>
+                    {language === 'hi' && <Check className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* ── Section: System ── */}
+              <p className="text-[10.5px] font-bold tracking-widest text-zinc-500 uppercase px-1 pt-2">{language === 'hi' ? 'सिस्टम' : 'System'}</p>
+
+              {/* Audio Narration Info */}
+              <div className="flex items-center justify-between p-4 bg-[#111116] border border-white/[0.08] rounded-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#0d9488]/15 border border-[#0d9488]/25 flex items-center justify-center">
+                    <Radio className="w-4 h-4 text-[#2dd4bf]" />
+                  </div>
+                  <div>
+                    <p className="text-[13.5px] font-semibold text-white">{language === 'hi' ? 'ऑडियो नैरेटर' : 'Audio Narration'}</p>
+                    <p className="text-[11.5px] text-zinc-500">{language === 'hi' ? 'वेब स्पीच API' : 'Web Speech API'}</p>
+                  </div>
+                </div>
+                <span className="flex items-center gap-1.5 text-[12px] text-[#34d399] font-semibold font-mono">
+                  <span className="w-2 h-2 rounded-full bg-[#34d399] animate-pulse" />
+                  {language === 'hi' ? 'सक्रिय' : 'Active'}
+                </span>
+              </div>
+
+              {/* Sign Out */}
+              <button
+                type="button"
+                onClick={() => { setShowSettingsModal(false); logout(); }}
+                className="w-full flex items-center gap-3 p-4 bg-[#ef4444]/08 hover:bg-[#ef4444]/15 border border-[#ef4444]/20 hover:border-[#ef4444]/40 text-[#f87171] rounded-2xl font-semibold text-[13.5px] transition-all cursor-pointer group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#ef4444]/12 border border-[#ef4444]/25 flex items-center justify-center group-hover:bg-[#ef4444]/22 transition-colors">
                   <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </button>
+                </div>
+                <span>{language === 'hi' ? 'लॉग आउट' : 'Sign Out'}</span>
+              </button>
+
+              {/* Bottom spacing */}
+              <div className="h-2" />
+            </div>
+          </div>
+        )}
+
+        {/* ================= SAVED STORIES MODAL ================= */}
+        {showSavedModal && (
+          <div className="absolute inset-0 z-[60] flex flex-col min-h-0 overflow-hidden" style={{ background: 'rgba(5,5,7,0.97)', backdropFilter: 'blur(20px)' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/[0.07] shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center">
+                  <BookmarkCheck className="w-4 h-4 text-amber-400" />
+                </div>
+                <div>
+                  <h2 className="text-[15px] font-bold text-white">{language === 'hi' ? 'सहेजी गई खबरें' : 'Saved Stories'}</h2>
+                  <p className="text-[11px] text-zinc-500 font-mono">{bookmarks.length} {language === 'hi' ? 'कहानियां' : 'stories'}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSavedModal(false)}
+                className="w-8 h-8 rounded-full bg-white/[0.07] hover:bg-white/[0.12] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4 text-zinc-400" />
+              </button>
+            </div>
+
+            {/* Story List */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar">
+              {bookmarks.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full gap-4 py-16">
+                  <div className="w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                    <Bookmark className="w-9 h-9 text-amber-500/50" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[15px] font-semibold text-zinc-300">{language === 'hi' ? 'कोई खबर नहीं सहेजी' : 'No saved stories yet'}</p>
+                    <p className="text-[12px] text-zinc-500 mt-1">{language === 'hi' ? 'खबरों पर ⭐ दबाकर सहेजें' : 'Tap the ⭐ on any story to save it'}</p>
+                  </div>
+                </div>
+              ) : (
+                bookmarks.map((story) => (
+                  <div
+                    key={story.id}
+                    className="group relative bg-[#111116] hover:bg-[#16161d] border border-white/[0.07] hover:border-white/[0.12] rounded-2xl p-4 transition-all cursor-pointer"
+                    onClick={() => {
+                      const idx = allStories.findIndex(s => s.id === story.id);
+                      if (idx >= 0) {
+                        setCurrentStoryIndex(idx);
+                        setViewMode('player');
+                      }
+                      setShowSavedModal(false);
+                    }}
+                  >
+                    {/* Category badge */}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-lg ${story.categoryBg || 'bg-[#231b38]'} ${story.categoryText || 'text-[#a78bfa]'}`}>
+                        {story.category}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-zinc-500 font-mono">{story.durationMinutes}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); removeBookmark(story.id); }}
+                          className="w-6 h-6 rounded-full bg-[#ef4444]/10 hover:bg-[#ef4444]/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                          title="Remove bookmark"
+                        >
+                          <X className="w-3 h-3 text-[#f87171]" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <h3 className="text-[13.5px] font-semibold text-white leading-snug line-clamp-2 mb-1.5">{story.title}</h3>
+                    <p className="text-[11.5px] text-zinc-500 line-clamp-2 mb-3">{story.snippet}</p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#34d399]" />
+                        <span className="text-[10.5px] text-zinc-500 font-mono tracking-wider">{story.source}</span>
+                      </div>
+                      <span className="text-[10px] text-zinc-600 font-mono">
+                        {story.savedAt ? new Date(story.savedAt).toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-GB', { day: 'numeric', month: 'short' }) : ''}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 pb-5 pt-2 border-t border-white/[0.06] shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowSavedModal(false)}
+                className="w-full py-3 bg-[#6366f1]/15 hover:bg-[#6366f1]/25 border border-[#6366f1]/40 text-[#a5b4fc] hover:text-white rounded-2xl font-semibold text-[13px] transition-all cursor-pointer"
+              >
+                {language === 'hi' ? 'बंद करें' : 'Done'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ================= EDIT NICHES MODAL ================= */}
+        {showEditNichesModal && (
+          <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col justify-end p-4 animate-in fade-in">
+            <div className="w-full bg-[#111116] border border-white/[0.12] rounded-3xl p-5 text-left shadow-2xl relative max-h-[90%] flex flex-col justify-between">
+              
+              {/* Modal Header */}
+              <div className="flex items-start justify-between pb-3 border-b border-white/[0.08]">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <Sliders className="w-4 h-4 text-[#818cf8]" />
+                    <h3 className="text-[17px] font-bold text-white tracking-tight">
+                      {language === 'hi' ? 'अपनी रुचियां अनुकूलित करें' : 'Customize Your Niches'}
+                    </h3>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className="text-[12px] text-zinc-400">
+                      {language === 'hi' ? 'अधिकतम 7 रुचियां चुनें:' : 'Select up to 7 topics:'}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#064e3b]/50 border border-[#10b981]/50 text-[#34d399] font-mono text-[10.5px] font-bold">
+                      {tempSelectedNiches.length}/7 Selected
+                    </span>
+                  </div>
+                </div>
                 <button
                   type="button"
-                  onClick={() => setShowSettingsModal(false)}
-                  className="w-full py-2 text-zinc-400 hover:text-white text-[12.5px] font-medium text-center cursor-pointer"
+                  onClick={() => setShowEditNichesModal(false)}
+                  className="text-zinc-400 hover:text-white p-1 cursor-pointer"
                 >
-                  Close
+                  <X className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Niches Chips Grid */}
+              <div className="flex-1 overflow-y-auto py-3.5 no-scrollbar max-h-[360px]">
+                <div className="flex flex-wrap gap-2">
+                  {availableNiches.map((niche) => {
+                    const isSelected = tempSelectedNiches.includes(niche.id);
+                    return (
+                      <button
+                        key={niche.id}
+                        type="button"
+                        onClick={() => toggleTempNiche(niche.id)}
+                        className={`px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-200 flex items-center space-x-1.5 cursor-pointer ${
+                          isSelected
+                            ? "bg-[#1e1735] border-[1.5px] border-[#6366f1] text-white shadow-[0_2px_12px_rgba(99,102,241,0.3)] scale-[1.02]"
+                            : "bg-[#15151a] hover:bg-[#1c1c24] border border-white/[0.08] text-[#d4d4d8] hover:text-white"
+                        }`}
+                      >
+                        {niche.badge ? (
+                          <span className="text-[9.5px] font-mono font-extrabold text-[#71717a] bg-[#0c0c10] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                            {niche.badge}
+                          </span>
+                        ) : (
+                          <span className="text-[13px]">{niche.icon}</span>
+                        )}
+                        <span className={isSelected ? "text-white font-semibold" : ""}>{niche.label}</span>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-[#818cf8] stroke-[3]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Modal Footer / Save Buttons */}
+              <div className="pt-3 border-t border-white/[0.08] flex items-center space-x-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowEditNichesModal(false)}
+                  className="w-1/3 py-2.5 bg-white/[0.06] hover:bg-white/[0.1] text-zinc-300 hover:text-white rounded-xl font-semibold text-[13px] transition-colors cursor-pointer text-center"
+                >
+                  {language === 'hi' ? 'रद्द करें' : 'Cancel'}
+                </button>
+                <button
+                  type="button"
+                  disabled={isSavingNiches || tempSelectedNiches.length === 0}
+                  onClick={handleSaveNiches}
+                  className="flex-1 py-2.5 bg-[#6366f1] hover:bg-[#5558e6] active:scale-98 text-white rounded-xl font-bold text-[13.5px] flex items-center justify-center space-x-1.5 transition-all shadow-[0_4px_20px_rgba(99,102,241,0.4)] cursor-pointer disabled:opacity-50"
+                >
+                  {isSavingNiches ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                      <span>{language === 'hi' ? 'सहेज रहे हैं...' : 'Saving...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 mr-0.5" />
+                      <span>{language === 'hi' ? 'रुचियां सहेजें' : 'Save Niches'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
             </div>
           </div>
         )}

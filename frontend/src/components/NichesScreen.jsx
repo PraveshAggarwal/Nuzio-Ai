@@ -49,9 +49,6 @@ export default function NichesScreen({ onContinue }) {
                 <span className="text-[14px] font-bold text-white tracking-tight">
                   Nuzio
                 </span>
-                <span className="text-[14px] font-bold text-[#818cf8]">
-                  .ai
-                </span>
               </div>
             </div>
           </div>

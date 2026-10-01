@@ -132,36 +132,32 @@ export function LanguageProvider({ children }) {
   }, [user?.language]);
 
   /**
-   * Only allows selecting/toggling language if it has NOT been locked yet.
-   * Once locked (hasSelectedLanguage === true), language cannot be changed.
+   * Selects and switches the app language (English 'en' or Hindi 'hi').
+   * Persists to localStorage and syncs with MongoDB backend.
    */
-  const selectLanguage = (lang) => {
-    if (hasSelectedLanguage) {
-      console.warn('Language is locked and cannot be changed once selected.');
-      return;
-    }
+  const selectLanguage = async (lang) => {
+    if (lang !== 'en' && lang !== 'hi') return;
     setLanguage(lang);
-    localStorage.setItem('nuzio_lang', lang);
-  };
-
-  /**
-   * Confirms and permanently locks the language selection for the user.
-   */
-  const confirmLanguageSelection = async (customLang) => {
-    const finalLang = customLang || language;
-    setLanguage(finalLang);
     setHasSelectedLanguage(true);
-    localStorage.setItem('nuzio_lang', finalLang);
+    localStorage.setItem('nuzio_lang', lang);
     localStorage.setItem('nuzio_lang_selected', 'true');
 
     // Persist to database if user is authenticated
     if (updateUserPreferences) {
       try {
-        await updateUserPreferences({ language: finalLang });
+        await updateUserPreferences({ language: lang });
       } catch (err) {
-        console.error('Failed to sync confirmed language preference:', err);
+        console.error('Failed to sync language preference:', err);
       }
     }
+  };
+
+  /**
+   * Confirms language selection for the user.
+   */
+  const confirmLanguageSelection = async (customLang) => {
+    const finalLang = customLang || language;
+    await selectLanguage(finalLang);
   };
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -174,7 +170,6 @@ export function LanguageProvider({ children }) {
         locationAllowed,
         setLocationAllowed,
         hasSelectedLanguage,
-        isLanguageLocked: hasSelectedLanguage,
         confirmLanguageSelection,
         t,
       }}

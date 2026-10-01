@@ -141,9 +141,6 @@ export default function NuzioScreen({ onBackToLanguage }) {
               <span className="text-[28px] font-bold text-white tracking-tight leading-none">
                 Nuzio
               </span>
-              <span className="text-[28px] font-bold ml-1.5 text-[#8b5cf6] leading-none drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                AI
-              </span>
             </div>
           </div>
         </div>

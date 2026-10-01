@@ -58,6 +58,7 @@ export function NicheProvider({ children }) {
 
   const confirmNiches = async (customNiches) => {
     const nichesToSave = customNiches && Array.isArray(customNiches) ? customNiches : selectedNiches;
+    setSelectedNiches(nichesToSave);
     setHasCompletedNiches(true);
     localStorage.setItem('nuzio_niches_completed', 'true');
     localStorage.setItem('nuzio_selected_niches', JSON.stringify(nichesToSave));

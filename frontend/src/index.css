@@ -28,7 +28,28 @@
   font-style: italic;
 }
 
+
+/* ── Desktop only: hide all scrollbars (≥1024px) — mobile unchanged ── */
+@media (min-width: 1024px) {
+  html, body {
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* IE / Edge */
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;              /* Chrome / Safari */
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
 /* Audio wave animations */
+
 @keyframes wave-pulse {
   0%, 100% {
     transform: scaleY(0.45);
