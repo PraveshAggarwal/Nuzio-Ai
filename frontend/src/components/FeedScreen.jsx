@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNiches } from '../context/NicheContext';
@@ -6,7 +6,7 @@ import IosStatusBar from './IosStatusBar';
 import { 
   Play, Pause, SkipBack, SkipForward, Search, Bell, 
   ExternalLink, Star, Compass, Settings, X, Sliders, 
-  Globe, LogOut, ChevronLeft, Lock
+  Globe, LogOut, ChevronLeft, Lock, RefreshCw, Radio, Sparkles, Loader2
 } from 'lucide-react';
 
 export const LIVE_NEWS_DATABASE = {
@@ -1317,22 +1317,7 @@ export default function FeedScreen({ onEditNiches }) {
   const { language, selectLanguage } = useLanguage();
   const { selectedNiches, availableNiches, resetNichesOnboarding } = useNiches();
 
-  const allStories = language === 'hi' ? LIVE_NEWS_DATABASE.hi : LIVE_NEWS_DATABASE.en;
-
-  // Filter stories strictly based on user's selected niches
-  const userNicheStories = allStories.filter((story) => 
-    selectedNiches.length === 0 || selectedNiches.includes(story.nicheId)
-  );
-  const displayStories = userNicheStories.length > 0 ? userNicheStories : allStories;
-
-  // Horizontal category tabs derived from user's active niches
-  const categoriesList = [
-    'All',
-    ...selectedNiches.map(id => {
-      const match = availableNiches.find(n => n.id === id);
-      return match ? match.category : id;
-    })
-  ];
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
   // UI State: 'stream' (Discover List) vs 'player' (Now Playing Screen)
   const [viewMode, setViewMode] = useState('stream'); 
@@ -1344,11 +1329,80 @@ export default function FeedScreen({ onEditNiches }) {
   const [currentAudioSeconds, setCurrentAudioSeconds] = useState(0);
   const [availableVoices, setAvailableVoices] = useState([]);
 
+  // Live News from NewsData.io API state
+  const [liveArticles, setLiveArticles] = useState([]);
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLiveApi, setIsLiveApi] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState(null);
+
   // Modals & Panels
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchApiResults, setSearchApiResults] = useState([]);
+  const [isSearchingApi, setIsSearchingApi] = useState(false);
+
+  // Horizontal category tabs derived from user's active niches
+  const categoriesList = [
+    'All',
+    ...selectedNiches.map(id => {
+      const match = availableNiches.find(n => n.id === id);
+      return match ? match.category : id;
+    })
+  ];
+
+  // Fetch Live News from NewsData.io Backend API
+  const fetchLiveNews = useCallback(async (isManual = false) => {
+    if (isManual) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoadingNews(true);
+    }
+
+    try {
+      let nicheParam = '';
+      if (selectedCategory !== 'All') {
+        const match = availableNiches.find(n => n.category.toLowerCase() === selectedCategory.toLowerCase());
+        if (match) nicheParam = match.id;
+      }
+
+      const params = new URLSearchParams();
+      params.append('language', language === 'hi' ? 'hi' : 'en');
+      if (nicheParam) params.append('niche', nicheParam);
+      if (isManual) params.append('refresh', 'true');
+
+      const response = await fetch(`${BACKEND_URL}/api/news?${params.toString()}`);
+      const data = await response.json();
+
+      if (response.ok && data.success && Array.isArray(data.articles) && data.articles.length > 0) {
+        setLiveArticles(data.articles);
+        setIsLiveApi(true);
+        setLastRefreshedAt(new Date());
+      }
+    } catch (err) {
+      console.warn('Could not fetch live news API, using curated fallback:', err);
+    } finally {
+      setIsLoadingNews(false);
+      setIsRefreshing(false);
+    }
+  }, [language, selectedCategory, availableNiches, BACKEND_URL]);
+
+  // Fallback curated news if offline or initial
+  const fallbackStories = language === 'hi' ? LIVE_NEWS_DATABASE.hi : LIVE_NEWS_DATABASE.en;
+  const allStories = liveArticles.length > 0 ? liveArticles : fallbackStories;
+
+  // Filter stories strictly based on user's selected niches if using fallback
+  const userNicheStories = liveArticles.length > 0
+    ? liveArticles
+    : allStories.filter((story) => selectedNiches.length === 0 || selectedNiches.includes(story.nicheId));
+  const displayStories = userNicheStories.length > 0 ? userNicheStories : allStories;
+
+  // Fetch live news on mount & when category or language changes
+  useEffect(() => {
+    fetchLiveNews(false);
+  }, [fetchLiveNews]);
 
   // Load and listen for system / browser voices
   useEffect(() => {
@@ -1642,7 +1696,7 @@ export default function FeedScreen({ onEditNiches }) {
           {/* Top App Header Row */}
           <div className="flex items-center justify-between mt-3 px-1">
             
-            {/* Brand Logo: Soundwave + Nuzio AI */}
+            {/* Brand Logo: Soundwave + Nuzio AI + LIVE Indicator */}
             <div className="flex items-center space-x-2">
               <div className="flex items-center space-x-[2.5px] h-4">
                 <span className="w-[2.5px] h-2 bg-gradient-to-t from-[#6366f1] to-[#a855f7] rounded-full" />
@@ -1654,15 +1708,31 @@ export default function FeedScreen({ onEditNiches }) {
                 <span className="text-[15px] font-bold text-white tracking-tight">Nuzio</span>
                 <span className="text-[15px] font-bold ml-1 text-[#8b5cf6]">AI</span>
               </div>
+
+              {/* Real-time NewsData.io LIVE Indicator */}
+              <div className="flex items-center space-x-1 px-2 py-0.5 rounded-full bg-[#0d2818]/90 border border-[#34d399]/40 text-[9.5px] font-mono font-bold text-[#34d399] tracking-wider shadow-[0_0_10px_rgba(52,211,153,0.15)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
+                <span>LIVE</span>
+              </div>
             </div>
 
-            {/* Action Buttons: Search & Bell */}
-            <div className="flex items-center space-x-2.5">
+            {/* Action Buttons: Refresh, Search & Bell */}
+            <div className="flex items-center space-x-2">
+              <button 
+                type="button"
+                onClick={() => fetchLiveNews(true)}
+                disabled={isRefreshing}
+                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] active:scale-95 border border-white/[0.08] flex items-center justify-center transition-all cursor-pointer"
+                title="Refresh live news from newsdata.io"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-[#34d399] ${isRefreshing ? 'animate-spin' : ''}`} />
+              </button>
+
               <button 
                 type="button"
                 onClick={() => setShowSearchModal(true)}
-                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer"
-                title="Search stories"
+                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] active:scale-95 border border-white/[0.08] flex items-center justify-center transition-all cursor-pointer"
+                title="Search live stories"
               >
                 <Search className="w-4 h-4 text-[#38bdf8]" />
               </button>
@@ -1670,7 +1740,7 @@ export default function FeedScreen({ onEditNiches }) {
               <button 
                 type="button"
                 onClick={() => setShowNotificationsModal(true)}
-                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] border border-white/[0.08] flex items-center justify-center relative transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full bg-[#181820] hover:bg-[#20202a] active:scale-95 border border-white/[0.08] flex items-center justify-center relative transition-all cursor-pointer"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-[#fbbf24]" />
@@ -1712,87 +1782,108 @@ export default function FeedScreen({ onEditNiches }) {
         {viewMode === 'stream' ? (
           /* ================= DISCOVER CARDS STREAM (SCREENSHOT 1) ================= */
           <div className="flex-1 overflow-y-auto px-5 py-3 space-y-3.5 no-scrollbar">
-            {filteredStories.map((story) => {
-              const isThisPlaying = isPlaying && currentStory.id === story.id;
-              const isSaved = savedIds.includes(story.id);
-
-              return (
-                <div 
-                  key={story.id}
-                  onClick={() => handleOpenNewsCard(story.id)}
-                  className="w-full bg-[#141418] hover:bg-[#18181f] active:scale-[0.99] border border-white/[0.08] rounded-[22px] p-4.5 transition-all duration-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)] relative text-left cursor-pointer group"
-                >
-                  {/* Badges Row (Category Pill + Source Pill) */}
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold uppercase tracking-wider ${story.categoryBg || 'bg-[#231b38]'} ${story.categoryText || 'text-[#a78bfa]'}`}>
-                      {story.category}
-                    </span>
-
-                    <a
-                      href={story.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold bg-[#132b21] text-[#34d399] hover:bg-[#1a382b] flex items-center space-x-1 cursor-pointer transition-colors"
-                    >
-                      <span>{story.source}</span>
-                      <span className="text-[12px] leading-none">↗</span>
-                    </a>
-                  </div>
-
-                  {/* News Title */}
-                  <h3 className="text-[16px] sm:text-[17px] font-bold text-white leading-snug tracking-tight mt-2.5 group-hover:text-[#a78bfa] transition-colors">
-                    {story.title}
-                  </h3>
-
-                  {/* News Snippet / Summary */}
-                  <p className="text-[13px] text-[#9ca3af] leading-relaxed mt-1.5 line-clamp-2">
-                    {story.snippet}
-                  </p>
-
-                  {/* Card Footer Row */}
-                  <div className="flex items-center justify-between mt-3.5 pt-1">
-                    <span className="text-[11px] font-mono font-semibold tracking-wider text-[#6b7280] uppercase">
-                      {story.listenTime || '3 MIN LISTEN'}
-                    </span>
-
-                    <div className="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenNewsCard(story.id);
-                        }}
-                        className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-[0_2px_10px_rgba(52,211,153,0.3)] active:scale-95 ${
-                          isThisPlaying 
-                            ? 'bg-[#10b981] text-black animate-pulse' 
-                            : 'bg-[#34d399] hover:bg-[#2ed093] text-black'
-                        }`}
-                        title="Listen to story"
-                      >
-                        {isThisPlaying ? (
-                          <Pause className="w-4 h-4 fill-black text-black" />
-                        ) : (
-                          <Play className="w-4 h-4 fill-black text-black translate-x-0.5" />
-                        )}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={(e) => toggleSaveStory(story.id, e)}
-                        className={`w-9 h-9 rounded-full bg-[#202028] hover:bg-[#282834] flex items-center justify-center transition-colors cursor-pointer ${
-                          isSaved ? 'text-amber-400' : 'text-[#6b7280] hover:text-white'
-                        }`}
-                        title={isSaved ? 'Bookmarked' : 'Bookmark story'}
-                      >
-                        <Star className={`w-4 h-4 ${isSaved ? 'fill-amber-400' : ''}`} />
-                      </button>
+            {/* Loading Skeleton */}
+            {isLoadingNews && liveArticles.length === 0 ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="w-full bg-[#141418] border border-white/[0.06] rounded-[22px] p-4.5 animate-pulse">
+                    <div className="flex space-x-2">
+                      <div className="w-20 h-4 bg-white/10 rounded-md" />
+                      <div className="w-24 h-4 bg-white/5 rounded-md" />
+                    </div>
+                    <div className="w-full h-5 bg-white/10 rounded-md mt-3" />
+                    <div className="w-3/4 h-5 bg-white/10 rounded-md mt-1.5" />
+                    <div className="w-full h-3.5 bg-white/5 rounded-md mt-3" />
+                    <div className="flex justify-between items-center mt-4">
+                      <div className="w-20 h-3 bg-white/5 rounded-md" />
+                      <div className="w-9 h-9 rounded-full bg-white/10" />
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              filteredStories.map((story) => {
+                const isThisPlaying = isPlaying && currentStory.id === story.id;
+                const isSaved = savedIds.includes(story.id);
 
-                </div>
-              );
-            })}
+                return (
+                  <div 
+                    key={story.id}
+                    onClick={() => handleOpenNewsCard(story.id)}
+                    className="w-full bg-[#141418] hover:bg-[#18181f] active:scale-[0.99] border border-white/[0.08] rounded-[22px] p-4.5 transition-all duration-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)] relative text-left cursor-pointer group"
+                  >
+                    {/* Badges Row (Category Pill + Source Pill) */}
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold uppercase tracking-wider ${story.categoryBg || 'bg-[#231b38]'} ${story.categoryText || 'text-[#a78bfa]'}`}>
+                        {story.category}
+                      </span>
+
+                      <a
+                        href={story.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-2.5 py-0.5 rounded-lg text-[10.5px] font-mono font-bold bg-[#132b21] text-[#34d399] hover:bg-[#1a382b] flex items-center space-x-1 cursor-pointer transition-colors"
+                      >
+                        <span>{story.source}</span>
+                        <span className="text-[12px] leading-none">↗</span>
+                      </a>
+                    </div>
+
+                    {/* News Title */}
+                    <h3 className="text-[16px] sm:text-[17px] font-bold text-white leading-snug tracking-tight mt-2.5 group-hover:text-[#a78bfa] transition-colors">
+                      {story.title}
+                    </h3>
+
+                    {/* News Snippet / Summary */}
+                    <p className="text-[13px] text-[#9ca3af] leading-relaxed mt-1.5 line-clamp-2">
+                      {story.snippet}
+                    </p>
+
+                    {/* Card Footer Row */}
+                    <div className="flex items-center justify-between mt-3.5 pt-1">
+                      <span className="text-[11px] font-mono font-semibold tracking-wider text-[#6b7280] uppercase">
+                        {story.listenTime || '3 MIN LISTEN'}
+                      </span>
+
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenNewsCard(story.id);
+                          }}
+                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-[0_2px_10px_rgba(52,211,153,0.3)] active:scale-95 ${
+                            isThisPlaying 
+                              ? 'bg-[#10b981] text-black animate-pulse' 
+                              : 'bg-[#34d399] hover:bg-[#2ed093] text-black'
+                          }`}
+                          title="Listen to story"
+                        >
+                          {isThisPlaying ? (
+                            <Pause className="w-4 h-4 fill-black text-black" />
+                          ) : (
+                            <Play className="w-4 h-4 fill-black text-black translate-x-0.5" />
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={(e) => toggleSaveStory(story.id, e)}
+                          className={`w-9 h-9 rounded-full bg-[#202028] hover:bg-[#282834] flex items-center justify-center transition-colors cursor-pointer ${
+                            isSaved ? 'text-amber-400' : 'text-[#6b7280] hover:text-white'
+                          }`}
+                          title={isSaved ? 'Bookmarked' : 'Bookmark story'}
+                        >
+                          <Star className={`w-4 h-4 ${isSaved ? 'fill-amber-400' : ''}`} />
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                );
+              })
+            )}
           </div>
         ) : (
           /* ================= DETAILED AUDIO PLAYER VIEW (SCREENSHOT 2) ================= */
@@ -2062,15 +2153,20 @@ export default function FeedScreen({ onEditNiches }) {
                 <input
                   type="text"
                   autoFocus
-                  placeholder="Search live news stories..."
+                  placeholder="Search live news stories with NewsData.io..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent text-[14px] text-white focus:outline-none placeholder-zinc-500"
                 />
+                {isSearchingApi && <Loader2 className="w-4 h-4 text-[#34d399] animate-spin" />}
               </div>
               <button 
                 type="button"
-                onClick={() => setShowSearchModal(false)}
+                onClick={() => {
+                  setShowSearchModal(false);
+                  setSearchQuery('');
+                  setSearchApiResults([]);
+                }}
                 className="p-1 text-zinc-400 hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -2078,21 +2174,25 @@ export default function FeedScreen({ onEditNiches }) {
             </div>
 
             <div className="flex-1 overflow-y-auto py-3 space-y-2 no-scrollbar">
-              {allStories
-                .filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()) || s.snippet.toLowerCase().includes(searchQuery.toLowerCase()))
-                .map((story) => (
-                  <div
-                    key={story.id}
-                    onClick={() => {
-                      handleOpenNewsCard(story.id);
-                      setShowSearchModal(false);
-                    }}
-                    className="p-3 bg-[#15151c] hover:bg-[#1d1d26] rounded-xl border border-white/[0.06] cursor-pointer transition-colors text-left"
-                  >
+              {(searchApiResults.length > 0 ? searchApiResults : allStories.filter(s => 
+                !searchQuery || s.title.toLowerCase().includes(searchQuery.toLowerCase()) || s.snippet.toLowerCase().includes(searchQuery.toLowerCase())
+              )).map((story) => (
+                <div
+                  key={story.id}
+                  onClick={() => {
+                    handleOpenNewsCard(story.id);
+                    setShowSearchModal(false);
+                  }}
+                  className="p-3 bg-[#15151c] hover:bg-[#1d1d26] rounded-xl border border-white/[0.06] cursor-pointer transition-colors text-left group"
+                >
+                  <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono text-[#8b5cf6] font-semibold">{story.category}</span>
-                    <h4 className="text-[13px] font-semibold text-white mt-0.5">{story.title}</h4>
+                    <span className="text-[10px] font-mono text-zinc-500">{story.source}</span>
                   </div>
-                ))}
+                  <h4 className="text-[13px] font-semibold text-white mt-1 group-hover:text-[#a78bfa] transition-colors">{story.title}</h4>
+                  <p className="text-[11.5px] text-zinc-400 line-clamp-1 mt-0.5">{story.snippet}</p>
+                </div>
+              ))}
             </div>
           </div>
         )}
